@@ -15,7 +15,7 @@ using System.DirectoryServices;
 using Microsoft.Extensions.Configuration;
 using UIDP.LOG;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("LogIn")]

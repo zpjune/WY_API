@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UIDP.BIZModule;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("Home")]

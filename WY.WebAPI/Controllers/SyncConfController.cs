@@ -12,7 +12,7 @@ using System.Data;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("SyncConf")]

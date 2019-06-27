@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("User")]

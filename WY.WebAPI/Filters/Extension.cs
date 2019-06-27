@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     public static class Extension
     {

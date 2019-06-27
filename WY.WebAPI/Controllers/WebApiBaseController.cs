@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using UIDP.BIZModule;
 using UIDP.LOG;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     //    [Produces("application/json")]
     [Route("api/WebApiBase")]

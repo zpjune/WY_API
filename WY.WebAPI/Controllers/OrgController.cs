@@ -15,7 +15,7 @@ using UIDP.UTILITY;
 using System.Net;
 using System.Text;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("Org")]

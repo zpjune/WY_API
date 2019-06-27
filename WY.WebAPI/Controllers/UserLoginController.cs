@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using UIDP.BIZModule;
 using Newtonsoft.Json.Linq;
 
-namespace WZGX.WebAPI.Controllers
+namespace WY.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("UserLogin")]
