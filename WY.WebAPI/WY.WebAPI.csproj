@@ -11,11 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\CangChu\**" />
+    <Content Remove="Controllers\CangChu\**" />
+    <EmbeddedResource Remove="Controllers\CangChu\**" />
+    <None Remove="Controllers\CangChu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Filters\AuthFilterAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\CangChu\" />
     <Folder Include="UploadFiles\img\" />
     <Folder Include="UploadFiles\notice\" />
     <Folder Include="wwwroot\" />

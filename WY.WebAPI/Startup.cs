@@ -12,6 +12,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using UEditor.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace UIDP.WebAPI
 {
@@ -40,6 +42,11 @@ namespace UIDP.WebAPI
 
             });
             services.AddUEditorService("ueditor.json", true);
+            services.AddSingleton(serviceProvider =>
+            {
+                var server = serviceProvider.GetRequiredService<IServer>();
+                return server.Features.Get<IServerAddressesFeature>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +79,16 @@ System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Files/export"
                 {
                     ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=36000");
                 }
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+               System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "UploadFiles/HouseImg")),
+                RequestPath = "/UploadFiles/HouseImg",
+                //OnPrepareResponse = ctx =>
+                //{
+                //    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=36000");
+                //}
             });
             app.UseStaticFiles(new StaticFileOptions
             {

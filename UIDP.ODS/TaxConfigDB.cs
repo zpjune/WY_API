@@ -38,30 +38,23 @@ namespace UIDP.ODS
         {
             StringBuilder sql = new StringBuilder();
             //string sql = "INSERT INTO tax_dictionary(S_Id,S_CreateDate,S_CreateBy,ParentCode,Code,Name,EnglishCode,SortNo)VALUES(";
-            sql.Append("INSERT INTO tax_dictionary(S_Id,S_CreateDate,S_CreateBy,ParentCode,Code,Name,EnglishCode,SortNo)VALUES('");
-            sql.Append(d["S_Id"]);
-            sql.Append("','");
-            sql.Append(d["S_CreateDate"]);
-            sql.Append("','");
-            sql.Append(d["S_CreateBy"]);
-            sql.Append("','");
-            sql.Append(d["ParentCode"]);
-            sql.Append("','");
-            sql.Append(d["Code"]);
-            sql.Append("','");
-            sql.Append(d["Name"]);
-            sql.Append("','");
-            sql.Append(d["EnglishCode"] == null ? "" : d["EnglishCode"]);
-            sql.Append("',");
-            sql.Append(d["SortNo"] == null ? 0 : d["SortNo"]);
-            sql.Append(")");
-            return db.ExecutByStringResult(sql.ToString().Trim());
+            sql.Append("INSERT INTO tax_dictionary(S_Id,S_CreateDate,S_CreateBy,ParentCode,Code,Name,EnglishCode,SortNo)VALUES(");
+            sql.Append(GetSqlStr(d["S_Id"]));
+            sql.Append(GetSqlStr(d["S_CreateDate"]));
+            sql.Append(GetSqlStr(d["S_CreateBy"]));
+            sql.Append(GetSqlStr(d["ParentCode"]));
+            sql.Append(GetSqlStr(d["Code"]));
+            sql.Append(GetSqlStr(d["Name"]));
+            sql.Append(GetSqlStr(d["EnglishCode"]));
+            sql.Append(GetSqlStr(d["SortNo"],1));
+            return db.ExecutByStringResult(sql.ToString().TrimEnd(',') + ")");
         }
 
         public DataTable getRepeatInfo(Dictionary<string, object> d)
         {
             string sql = "SELECT * FROM  tax_dictionary WHERE 1=1";
-            sql+=" AND Code='" + d["Code"] + "'";
+            sql += " AND Code='" + d["Code"] + "'";
+            sql += " AND ParentCode='" + d["ParentCode"] + "'";
             //sql+=" OR Name='" + d["Name"] + "'";
             return db.GetDataTable(sql);
         }
@@ -77,8 +70,31 @@ namespace UIDP.ODS
             string sql = "SELECT * FROM tax_dictionary WHERE Code='" + param + "'" + " OR Name='" + param + "'" + " OR EnglishCode='" + param + "'";
             return db.GetDataTable(sql);
         }
-
-
+        /// <summary>
+        /// 构造sql字符串方法
+        /// </summary>
+        /// <param name="t">data</param>
+        /// <param name="type">类型，0为字符类型</param>
+        /// <returns></returns>
+        public string GetSqlStr(object t,int type=0)
+        {
+            if (t==null||t.ToString()=="")
+            {
+                return "null,";
+                
+            }
+            else
+            {
+                if (type == 0)
+                {
+                    return "'" + t + "',";
+                }
+                else
+                {
+                    return t + ",";
+                }
+            }
+        }
 
     }
 }
