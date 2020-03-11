@@ -11,7 +11,7 @@ namespace UIDP.BIZModule.wy
     public class HouseInfoModule
     {
         HouseInfoDB db = new HouseInfoDB();
-        public Dictionary<string,object> GetHouseInfo(string FWMC, string LSFGS, string FWSX,int limit,int page,string baseURL)
+        public Dictionary<string, object> GetHouseInfo(string FWMC, string LSFGS, string FWSX, int limit, int page, string baseURL)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -45,15 +45,15 @@ namespace UIDP.BIZModule.wy
                         item.IS_DELETE = Convert.ToInt32(dr["IS_DELETE"]);
                         item.ZFK = dr["ZFK"] == null ? 0 : Convert.ToDecimal(dr["ZFK"].ToString());
                         item.PMT = new List<file>();
-                        
+
                         if (dr["PMT"] != null && dr["PMT"].ToString() != "")
                         {
-                            foreach(string path in dr["PMT"].ToString().TrimEnd(',').Split(','))
+                            foreach (string path in dr["PMT"].ToString().TrimEnd(',').Split(','))
                             {
                                 file f = new file()
                                 {
                                     name = Guid.NewGuid().ToString(),
-                                    url = baseURL  + path
+                                    url = baseURL + path
                                 };
                                 item.PMT.Add(f);
                                 item.newFilePath = dr["PMT"].ToString();
@@ -77,7 +77,7 @@ namespace UIDP.BIZModule.wy
                     r["message"] = "成功，但是没有数据";
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 r["message"] = e.Message;
                 r["code"] = -1;
@@ -85,7 +85,7 @@ namespace UIDP.BIZModule.wy
             return r;
         }
 
-        public Dictionary<string,object> CreateHouseInfo(Dictionary<string,object> d)
+        public Dictionary<string, object> CreateHouseInfo(Dictionary<string, object> d)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -102,7 +102,7 @@ namespace UIDP.BIZModule.wy
                     r["code"] = -1;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 r["message"] = e.Message;
                 r["code"] = -1;
@@ -159,6 +159,23 @@ namespace UIDP.BIZModule.wy
             }
             return r;
         }
+        public string UploadHouseInfo(string filePath)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            List<string> list = new List<string>();
+            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\用户.xls";//原始文件
+            string path = filePath;//原始文件
+            string mes = "";
+            DataTable dt = new DataTable();
 
+            UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
+            tool.GetDataTable(System.IO.File.OpenRead(path), path, modePath, ref mes, ref dt);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                return "空数据，导入失败！";
+            }
+
+            return "";
+        }
     }
 }
