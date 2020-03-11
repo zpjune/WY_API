@@ -70,6 +70,12 @@ namespace UIDP.ODS
             string sql = "SELECT * FROM tax_dictionary WHERE Code='" + param + "'" + " OR Name='" + param + "'" + " OR EnglishCode='" + param + "'";
             return db.GetDataTable(sql);
         }
+
+        public DataTable GetOptions(string ParentCode)
+        {
+            string sql = "select Code,Name from tax_dictionary where ParentCode='" + ParentCode + "'";
+            return db.GetDataTable(sql);
+        }
         /// <summary>
         /// 构造sql字符串方法
         /// </summary>

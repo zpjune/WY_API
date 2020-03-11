@@ -59,6 +59,8 @@ namespace WY.WebAPI.Controllers
             Dictionary<string, object> res = TC.delNode(d);
             return Json(res);
         }
+        [HttpGet("GetOptions")]
+        public IActionResult GetOptions(string ParentCode) => Ok(TC.GetOptions(ParentCode));
 
 
     }
