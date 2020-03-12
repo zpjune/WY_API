@@ -44,6 +44,8 @@ namespace UIDP.BIZModule.wy
                         item.BJSJ = dr["BJSJ"] == null ? null : dr["BJSJ"].ToString();
                         item.IS_DELETE = Convert.ToInt32(dr["IS_DELETE"]);
                         item.ZFK = dr["ZFK"] == null ? 0 : Convert.ToDecimal(dr["ZFK"].ToString());
+                        item.LS = dr["LS"] == null ? null : dr["LS"].ToString();
+                        item.JG = dr["JG"] == null ? null : dr["JG"].ToString();
                         item.PMT = new List<file>();
 
                         if (dr["PMT"] != null && dr["PMT"].ToString() != "")

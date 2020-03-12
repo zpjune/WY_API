@@ -30,5 +30,7 @@ namespace UIDP.BIZModule.wy.Models
         public decimal? ZFK { get; set; }
         public List<file> PMT { get; set; }
         public string newFilePath { get; set; }
+        public string LS { get; set; }
+        public string JG { get; set; }
     }
 }

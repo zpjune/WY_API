@@ -42,7 +42,14 @@ namespace UIDP.ODS
             sql.Append(GetSqlStr(d["S_Id"]));
             sql.Append(GetSqlStr(d["S_CreateDate"]));
             sql.Append(GetSqlStr(d["S_CreateBy"]));
-            sql.Append(GetSqlStr(d["ParentCode"]));
+            if (d.ContainsKey("ParentCode"))
+            {
+                sql.Append(GetSqlStr(d["ParentCode"]));
+            }
+            else
+            {
+                sql.Append(GetSqlStr(""));
+            }
             sql.Append(GetSqlStr(d["Code"]));
             sql.Append(GetSqlStr(d["Name"]));
             sql.Append(GetSqlStr(d["EnglishCode"]));
@@ -54,7 +61,11 @@ namespace UIDP.ODS
         {
             string sql = "SELECT * FROM  tax_dictionary WHERE 1=1";
             sql += " AND Code='" + d["Code"] + "'";
-            sql += " AND ParentCode='" + d["ParentCode"] + "'";
+            if (d.ContainsKey("ParentCode"))
+            {
+                sql += " AND ParentCode='" + d["ParentCode"] + "'";
+            }
+            
             //sql+=" OR Name='" + d["Name"] + "'";
             return db.GetDataTable(sql);
         }
