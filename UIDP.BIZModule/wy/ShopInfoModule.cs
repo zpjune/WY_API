@@ -10,7 +10,7 @@ namespace UIDP.BIZModule.wy
     public class ShopInfoModule
     {
         ShopInfoDB db = new ShopInfoDB();
-        public Dictionary<string,object> GetShopInfo(string ZHXM, string IS_PASS, int FWSX, string FWID,int page, int limit)
+        public Dictionary<string,object> GetShopInfo(string ZHXM, string IS_PASS, string FWSX, string FWID,int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -200,6 +200,90 @@ namespace UIDP.BIZModule.wy
             try
             {
                 string b = db.EndLease(FWID,CZ_SHID);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["message"] = b;
+                    r["code"] = -1;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH,int limit,int page)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["items"] = KVTool.GetPagedTable(dt, limit, page);
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["items"] = dt;
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+
+        public Dictionary<string, object> GetShopDetailUserInfo(string CZ_SHID)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetShopDetailUserInfo(CZ_SHID);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["items"] = dt;
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> SecondHand(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.SecondHand(d);
                 if (b == "")
                 {
                     r["message"] = "成功";

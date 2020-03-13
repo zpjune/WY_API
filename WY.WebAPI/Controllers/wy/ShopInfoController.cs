@@ -23,7 +23,7 @@ namespace WY.WebAPI.Controllers.wy
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("GetShopInfo")]
-        public IActionResult GetShopInfo(string ZHXM, string IS_PASS, int FWSX, string FWID, int page, int limit) => Ok(SM.GetShopInfo(ZHXM, IS_PASS,FWSX,FWID, page, limit));
+        public IActionResult GetShopInfo(string ZHXM, string IS_PASS, string FWSX, string FWID, int page, int limit) => Ok(SM.GetShopInfo(ZHXM, IS_PASS,FWSX,FWID, page, limit));
         /// <summary>
         /// 获取商户详情 包括房屋信息，商户信息，租赁信息，物业信息等
         /// </summary>
@@ -78,7 +78,35 @@ namespace WY.WebAPI.Controllers.wy
         [HttpGet("EndLease")]
         public IActionResult EndLease(string FWID,string CZ_SHID) => Ok(SM.EndLease(FWID,CZ_SHID));
 
+        /// <summary>
+        /// 转售房屋
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("SecondHand")]
+        public IActionResult SecondHand([FromBody]JObject value) => Ok(SM.SecondHand(value.ToObject<Dictionary<string, object>>()));
 
+        /// <summary>
+        /// 获取商户使用者详情
+        /// </summary>
+        /// <param name="CZ_SHID"></param>
+        /// <returns></returns>
+        [HttpGet("GetShopDetailUserInfo")]
+        public IActionResult GetShopDetailUserInfo(string CZ_SHID) => Ok(SM.GetShopDetailUserInfo(CZ_SHID));
+
+        /// <summary>
+        /// 获取商户查询列表
+        /// </summary>
+        /// <param name="FWBH"></param>
+        /// <param name="ZHXM"></param>
+        /// <param name="SFZH"></param>
+        /// <param name="SHOPBH"></param>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        [HttpGet("GetShopUserInfo")]
+        public IActionResult GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH, int limit, int page) 
+            => Ok(SM.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH,limit,page));
 
 
     }
