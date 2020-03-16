@@ -149,6 +149,8 @@ namespace WY.WebAPI.Controllers.wy
 
             return Json(r);
         }
+        [HttpGet("ExportHouseInfo")]
+        public IActionResult ExportHouseInfo() => Ok(HM.ExportHouseInfo());
 
     }
 }

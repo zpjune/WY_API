@@ -90,6 +90,43 @@ namespace UIDP.ODS.wy
             return db.ExecutByStringResult(sql);
         }
 
+        public string UpLoadHouseInfo(DataTable dt)
+        {
+            List<string> list = new List<string>();
+            foreach(DataRow dr in dt.Rows)
+            {
+                string sql = "INSERT INTO wy_houseinfo (FWID,FWBH,FWMC,JZMJ,LSFGS,ZLWZ,JGLX,ZCYZ,SSQY,WATER_NUMBER,ELE_NUMBER,ZFK,IS_DELETE,FWSX)" +
+                " VALUES(";
+                sql += GetSqlStr(Guid.NewGuid());
+                sql += GetSqlStr(dr["房屋编号"]);
+                sql += GetSqlStr(dr["房屋名称"]);
+                sql += GetSqlStr(dr["建筑面积"]);
+                sql += GetSqlStr(dr["隶属分公司"]);
+                sql += GetSqlStr(dr["坐落位置"]);
+                sql += GetSqlStr(dr["结构类型"]);
+                sql += GetSqlStr(dr["资产原值"]);
+                sql += GetSqlStr(dr["所属区域"]);
+                sql += GetSqlStr(dr["水表编号"]);
+                sql += GetSqlStr(dr["电表编号"]);
+                sql += GetSqlStr(dr["总房款"]);
+                sql += GetSqlStr(0, 1);
+                sql += GetSqlStr(0, 1);
+                sql = sql.TrimEnd(',') + ")";
+                list.Add(sql);
+            }
+            return db.Executs(list);          
+        }
+
+        public DataTable ExportHouseInfo()
+        {
+            string sql = "select a.*,b.Name AS LS,c.Name AS JG from wy_houseinfo a" +
+                " left join tax_dictionary b on a.LSFGS=b.Code AND b.ParentCode='LSFGS'" +
+                " left join tax_dictionary c on a.JGLX=c.Code AND c.ParentCode='JGLX'" +
+                " WHERE a.IS_DELETE=0";
+            return db.GetDataTable(sql);
+
+        }
+
 
         public string GetSqlStr(object t, int type = 0)
         {

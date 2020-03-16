@@ -109,5 +109,8 @@ namespace WY.WebAPI.Controllers.wy
             => Ok(SM.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH,limit,page));
 
 
+        [HttpGet("ExportShopInfo")]
+        public IActionResult ExportShopInfo(string FWSX) => Ok(SM.ExportShopInfo(FWSX));
+
     }
 }

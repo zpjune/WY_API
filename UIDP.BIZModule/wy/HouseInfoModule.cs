@@ -176,8 +176,37 @@ namespace UIDP.BIZModule.wy
             {
                 return "空数据，导入失败！";
             }
+            string b = db.UpLoadHouseInfo(dt);
 
             return "";
+        }
+
+        public Dictionary<string, object> ExportHouseInfo()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.ExportHouseInfo();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = dt;
+                    r["message"] = "成功!";
+                }
+                else
+                {
+                    r["total"] = 0;
+                    r["code"] = 2001;
+                    r["message"] = "成功，但是没有数据";
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
         }
     }
 }

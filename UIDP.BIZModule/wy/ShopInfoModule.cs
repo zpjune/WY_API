@@ -229,13 +229,13 @@ namespace UIDP.BIZModule.wy
                 {
                     r["code"] = 2000;
                     r["message"] = "成功";
-                    r["items"] = KVTool.GetPagedTable(dt, limit, page);
+                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
-                    r["code"] = 2000;
-                    r["message"] = "成功,但是没有数据";
+                    r["code"] = 2001;
+                    r["message"] = "成功,但是没有数据,租户可能已经解除了物业关系";
                     r["items"] = dt;
                     r["total"] = 0;
                 }
@@ -293,6 +293,36 @@ namespace UIDP.BIZModule.wy
                 {
                     r["message"] = b;
                     r["code"] = -1;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> ExportShopInfo(string FWSX)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.ExportShopInfo(FWSX);
+                if (dt.Rows.Count > 0)
+                {
+                    r["message"] = "成功！";
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+
+                }
+                else
+                {
+                    r["message"] = "成功，但是没有数据";
+                    r["code"] = 2001;
+                    r["items"] = new DataTable();
+                    r["total"] = 0;
                 }
             }
             catch (Exception e)

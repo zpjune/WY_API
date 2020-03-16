@@ -58,8 +58,8 @@ namespace UIDP.ODS.wy
             string LeaseSql = " UPDATE wy_Leasinginfo SET IS_DELETE=1 WHERE LEASE_ID in (SELECT LEASE_ID FROM wy_shopinfo WHERE CZ_SHID='" + CZ_SHID + "')";
             List<string> list = new List<string>()
             {
-                {ShopSql },
-                {HouseSql },
+                { ShopSql },
+                { HouseSql },
                 { FeeSql},
                 { LeaseSql}
             };
@@ -106,7 +106,7 @@ namespace UIDP.ODS.wy
                 list.Add(FeeSql);
                 //租户信息插入语句
                 ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,SUBLET_ID,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,LEASE_ID,FEE_ID,IS_DELETE,FWID)values(";
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,LEASE_ID,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
                 ShopInfoSql += GetSqlStr(CZ_SHID);
                 ShopInfoSql += GetSqlStr(d["JYNR"]);
                 ShopInfoSql += GetSqlStr(d["ZHXM"]);
@@ -134,6 +134,7 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(FEE_ID);
                 ShopInfoSql += GetSqlStr(0, 1);
                 ShopInfoSql += GetSqlStr(d["FWID"]);
+                ShopInfoSql += GetSqlStr(d["userType"],1);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
                 list.Add(ShopInfoSql);
                 //房屋信息更新语句
@@ -143,7 +144,7 @@ namespace UIDP.ODS.wy
             else if(d["userType"].ToString() == "2")//出售用户
             {
                 ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,SUBLET_ID,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID)values(";
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
                 ShopInfoSql += GetSqlStr(CZ_SHID);
                 ShopInfoSql += GetSqlStr(d["JYNR"]);
                 ShopInfoSql += GetSqlStr(d["ZHXM"]);
@@ -192,6 +193,7 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(FEE_ID);
                 ShopInfoSql += GetSqlStr(0, 1);
                 ShopInfoSql += GetSqlStr(d["FWID"]);
+                ShopInfoSql += GetSqlStr(d["userType"],1);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
                 list.Add(ShopInfoSql);
                 FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE)VALUES(";
@@ -261,6 +263,7 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += "SHOP_NAME=" + GetSqlStr(d["SHOP_NAME"]);
                 ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
                 ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
+                ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
                 list.Add(ShopInfoSql);
                 //修改物业信息
@@ -342,6 +345,7 @@ namespace UIDP.ODS.wy
                     ShopInfoSql += "SHOP_NAME=" + GetSqlStr(d["SHOP_NAME"]);
                     ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
                     ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
+                    ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
                     ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
                     list.Add(ShopInfoSql);
 
@@ -370,13 +374,15 @@ namespace UIDP.ODS.wy
         public string EndLease(string FWID, string CZ_SHID)
         {
             string HouseSql = "UPDATE wy_houseinfo SET FWSX=0,CZ_SHID=NULL WHERE FWID='" + FWID + "'";
+            string ShopSql = "UPDATE wy_shopinfo SET SHOP_STATUS=4 WHERE CZ_SHID='"+CZ_SHID+"'";
             string FeeSql = "UPDATE wy_RopertyCosts SET IS_DELETE=1 WHERE FEE_ID=(SELECT FEE_ID FROM wy_shopinfo WHERE CZ_SHID='" + CZ_SHID + "')";
             string LeaseSql = " update wy_Leasinginfo SET IS_DELETE=1 WHERE LEASE_ID=(select LEASE_ID from wy_houseinfo WHERE CZ_SHID='" + CZ_SHID + "')";
             List<string> list = new List<string>()
             {
-                {HouseSql },
-                {FeeSql },
-                {LeaseSql }
+                { HouseSql },
+                { FeeSql },
+                { LeaseSql },
+                { ShopSql }
             };
             return db.Executs(list);
             //return db.ExecutByStringResult(sql);
@@ -390,48 +396,50 @@ namespace UIDP.ODS.wy
             string CZ_SHID = Guid.NewGuid().ToString();
             string FEE_ID = Guid.NewGuid().ToString();
             
-            string ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID)values(";
-            ShopInfoSql += GetSqlStr(CZ_SHID);
-            ShopInfoSql += GetSqlStr(d["JYNR1"]);
-            ShopInfoSql += GetSqlStr(d["ZHXM1"]);
-            ShopInfoSql += GetSqlStr(d["ZHXB1"], 1);
-            ShopInfoSql += GetSqlStr(d["SFZH1"]);
-            ShopInfoSql += GetSqlStr(d["MOBILE_PHONE1"]);
-            ShopInfoSql += GetSqlStr(0,1);
-            ShopInfoSql += GetSqlStr(d["TELEPHONE1"]);
-            ShopInfoSql += GetSqlStr(d["E_MAIL1"]);
-            ShopInfoSql += GetSqlStr(0, 1);
-            ShopInfoSql += GetSqlStr(d["userId"]);
-            ShopInfoSql += GetSqlStr(DateTime.Now);
-            ShopInfoSql += GetSqlStr(d["SHOP_NAME1"]);
-            ShopInfoSql += GetSqlStr(d["SHOPBH1"]);
-            ShopInfoSql += GetSqlStr(d["ZHLX1"], 1);
-            ShopInfoSql += GetSqlStr(FEE_ID);
-            ShopInfoSql += GetSqlStr(0, 1);
-            ShopInfoSql += GetSqlStr(d["FWID"]);
-            ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
+            string NewShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
+            NewShopInfoSql += GetSqlStr(CZ_SHID);
+            NewShopInfoSql += GetSqlStr(d["JYNR1"]);
+            NewShopInfoSql += GetSqlStr(d["ZHXM1"]);
+            NewShopInfoSql += GetSqlStr(d["ZHXB1"], 1);
+            NewShopInfoSql += GetSqlStr(d["SFZH1"]);
+            NewShopInfoSql += GetSqlStr(d["MOBILE_PHONE1"]);
+            NewShopInfoSql += GetSqlStr(0,1);
+            NewShopInfoSql += GetSqlStr(d["TELEPHONE1"]);
+            NewShopInfoSql += GetSqlStr(d["E_MAIL1"]);
+            NewShopInfoSql += GetSqlStr(0, 1);
+            NewShopInfoSql += GetSqlStr(d["userId"]);
+            NewShopInfoSql += GetSqlStr(DateTime.Now);
+            NewShopInfoSql += GetSqlStr(d["SHOP_NAME1"]);
+            NewShopInfoSql += GetSqlStr(d["SHOPBH1"]);
+            NewShopInfoSql += GetSqlStr(d["ZHLX1"], 1);
+            NewShopInfoSql += GetSqlStr(FEE_ID);
+            NewShopInfoSql += GetSqlStr(0, 1);
+            NewShopInfoSql += GetSqlStr(d["FWID"]);
+            NewShopInfoSql += GetSqlStr(2,1);
+            NewShopInfoSql = NewShopInfoSql.TrimEnd(',') + ")";
+
 
 
             string FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE)VALUES(";
             FeeSql += GetSqlStr(FEE_ID);
-            FeeSql += GetSqlStr(d["WYJFFS"]);
-            FeeSql += GetSqlStr(d["WYJZSJ"]);
-            FeeSql += GetSqlStr(d["WYJZ"], 1);
+            FeeSql += GetSqlStr(d["WYJFFS1"]);
+            FeeSql += GetSqlStr(d["WYJZSJ1"]);
+            FeeSql += GetSqlStr(d["WYJZ1"], 1);
             FeeSql += GetSqlStr(0, 1);
             FeeSql = FeeSql.TrimEnd(',') + ")";
 
             string HouseUpdateSql = "UPDATE wy_houseinfo set CZ_SHID='" + CZ_SHID + "' WHERE FWID='" + d["FWID"] + "'";
 
-            string UpdateOldShop = "UPDATE wy_shopinfo set IS_SUBLET=2 WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
+            string UpdateOldShop = "UPDATE wy_shopinfo set IS_SUBLET=2,SHOP_STATUS=3 WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
 
 
             List<string> list = new List<string>()
             {
-                { ShopInfoSql},
+                { NewShopInfoSql},
                 { FeeSql},
                 { HouseUpdateSql},
-                { UpdateOldShop}
+                { UpdateOldShop},
             };
             return db.Executs(list);
         }
@@ -476,6 +484,17 @@ namespace UIDP.ODS.wy
                 " left join wy_houseinfo e on e.FWID=a.FWID AND e.IS_DELETE=0 " +
                 " left join tax_dictionary f on e.LSFGS=f.Code AND f.ParentCode='LSFGS'" +
                 " where a.CZ_SHID='" + CZ_SHID + "'";
+            return db.GetDataTable(sql);
+        }
+
+        public DataTable ExportShopInfo(string FWSX)
+        {
+            string sql = "select a.FWID,a.FWBH,a.FWMC,b.*,c.Name,a.FWID AS OLDID from wy_houseinfo a  " +
+                " join wy_shopinfo b ON a.CZ_SHID=b.CZ_SHID" +
+                " left join tax_dictionary c on a.LSFGS=c.Code and c.ParentCode='LSFGS'" +
+                " where a.IS_DELETE=0 AND b.IS_DELETE=0" +
+                " AND a.FWSX='"+FWSX+"'";
+            //sql += " ORDER BY SHOP_ID OFFSET" + ((page - 1) * limit) + " rows fetch next " + limit + " rows only";
             return db.GetDataTable(sql);
         }
 
