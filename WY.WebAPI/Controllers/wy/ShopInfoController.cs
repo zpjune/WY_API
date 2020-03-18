@@ -105,8 +105,8 @@ namespace WY.WebAPI.Controllers.wy
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("GetShopUserInfo")]
-        public IActionResult GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH, int limit, int page) 
-            => Ok(SM.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH,limit,page));
+        public IActionResult GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH,int SHOP_STATUS,int limit, int page) 
+            => Ok(SM.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH, SHOP_STATUS,limit, page));
 
 
         [HttpGet("ExportShopInfo")]

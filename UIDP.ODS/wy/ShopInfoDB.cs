@@ -444,12 +444,16 @@ namespace UIDP.ODS.wy
             return db.Executs(list);
         }
 
-        public DataTable GetShopUserInfo(string FWBH,string ZHXM,string SFZH,string SHOPBH)
+        public DataTable GetShopUserInfo(string FWBH,string ZHXM,string SFZH,string SHOPBH,int SHOP_STATUS)
         {
             string sql = "select a.*,b.FWBH,b.FWMC,c.Name from wy_shopinfo a " +
                 " left join wy_houseinfo b on a.FWID=b.FWID AND b.IS_DELETE=0" +
                 " left join tax_dictionary c on b.LSFGS=c.Code AND c.ParentCode='LSFGS'" +
                 " where a.IS_DELETE=0 AND IS_SUBLET!=3";
+            if (SHOP_STATUS != 0)
+            {
+                sql += " AND a.SHOP_STATUS=" + SHOP_STATUS;
+            }
             if (!string.IsNullOrEmpty(FWBH))
             {
                 sql += " AND b.FWBH='" + FWBH + "'";

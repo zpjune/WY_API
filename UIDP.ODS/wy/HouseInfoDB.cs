@@ -92,6 +92,7 @@ namespace UIDP.ODS.wy
 
         public string UpLoadHouseInfo(DataTable dt)
         {
+            DataTable DicTable = db.GetDataTable("SELECT Name,Code,ParentCode from tax_dictionary");
             List<string> list = new List<string>();
             foreach(DataRow dr in dt.Rows)
             {
@@ -101,9 +102,9 @@ namespace UIDP.ODS.wy
                 sql += GetSqlStr(dr["房屋编号"]);
                 sql += GetSqlStr(dr["房屋名称"]);
                 sql += GetSqlStr(dr["建筑面积"]);
-                sql += GetSqlStr(dr["隶属分公司"]);
+                sql += GetSqlStr(DicTable.Select("Name='"+ dr["隶属分公司"]+"'AND ParentCode='LSFGS'")[0]["Code"]);
                 sql += GetSqlStr(dr["坐落位置"]);
-                sql += GetSqlStr(dr["结构类型"]);
+                sql += GetSqlStr(DicTable.Select("Name='" + dr["结构类型"] + "'AND ParentCode='JGLX'")[0]["Code"]);
                 sql += GetSqlStr(dr["资产原值"]);
                 sql += GetSqlStr(dr["所属区域"]);
                 sql += GetSqlStr(dr["水表编号"]);

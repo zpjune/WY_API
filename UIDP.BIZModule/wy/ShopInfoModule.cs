@@ -219,12 +219,12 @@ namespace UIDP.BIZModule.wy
             return r;
         }
 
-        public Dictionary<string, object> GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH,int limit,int page)
+        public Dictionary<string, object> GetShopUserInfo(string FWBH, string ZHXM, string SFZH, string SHOPBH, int SHOP_STATUS,int limit,int page)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH);
+                DataTable dt = db.GetShopUserInfo(FWBH, ZHXM, SFZH, SHOPBH, SHOP_STATUS);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
