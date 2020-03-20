@@ -36,7 +36,7 @@ namespace UIDP.ODS.wy
             string PLAN_ID = Guid.NewGuid().ToString();
             string CheckPlanSql = "INSERT INTO wy_checkPlan (PLAN_ID,JHND,JHMC,JHSM,JHSJ,REMARK,CJR,CJSJ,IS_DELETE)values(";
             CheckPlanSql += GetSqlStr(PLAN_ID);
-            CheckPlanSql += "YEAR('" + d["JHND"] + "'),";
+            CheckPlanSql += GetSqlStr(d["JHND"]);
             CheckPlanSql += GetSqlStr(d["JHMC"]);
             CheckPlanSql += GetSqlStr(d["JHSM"]);
             CheckPlanSql += GetSqlStr(d["JHSJ"]);
@@ -76,7 +76,7 @@ namespace UIDP.ODS.wy
         public string UpdateCheckPlan(Dictionary<string,object> d)
         {
             List<string> SqlList = new List<string>();
-            string CheckPlanSql = "UPDATE wy_checkPlan SET JHND="+"YEAR('" + d["JHND"] + "'),";
+            string CheckPlanSql = "UPDATE wy_checkPlan SET JHND="+GetSqlStr(d["JHND"]);
             CheckPlanSql += "JHMC=" + GetSqlStr(d["JHMC"]);
             CheckPlanSql += "JHSM=" + GetSqlStr(d["JHSM"]);
             CheckPlanSql += "JHSJ=" + GetSqlStr(d["JHSJ"]);

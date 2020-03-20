@@ -14,6 +14,7 @@ namespace UIDP.ODS.wy
             string sql = "select {0} from wy_houseinfo a" +
                 " left join tax_dictionary b on a.LSFGS=b.Code AND b.ParentCode='LSFGS'" +
                 " left join tax_dictionary c on a.JGLX=c.Code AND c.ParentCode='JGLX'" +
+                " left join tax_dictionary d on a.SSQY=d.Code AND d.ParentCode='SSQY'" +
                 " WHERE a.IS_DELETE=0";
             if (!string.IsNullOrEmpty(FWMC))
             {
@@ -28,7 +29,7 @@ namespace UIDP.ODS.wy
                 sql += " AND FWSX= '" + FWSX + "'";
             }
             sql += "{1}";
-            string DataSql = string.Format(sql, "a.*,b.Name AS LS,c.Name AS JG", " ORDER BY FWBH OFFSET " + ((page - 1) * limit) + " rows fetch next " + limit + " rows only");
+            string DataSql = string.Format(sql, "a.*,b.Name AS LS,c.Name AS JG,d.Name AS SS", " ORDER BY FWBH OFFSET " + ((page - 1) * limit) + " rows fetch next " + limit + " rows only");
             string CountSql = string.Format(sql, "count(*) AS TOTAL", "");
             Dictionary<string, string> d = new Dictionary<string, string>()
             {

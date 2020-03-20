@@ -46,8 +46,8 @@ namespace UIDP.BIZModule.wy
                         item.ZFK = dr["ZFK"] == null ? 0 : Convert.ToDecimal(dr["ZFK"].ToString());
                         item.LS = dr["LS"] == null ? null : dr["LS"].ToString();
                         item.JG = dr["JG"] == null ? null : dr["JG"].ToString();
+                        item.SS=dr["SS"] == null ? null : dr["SS"].ToString();
                         item.PMT = new List<file>();
-
                         if (dr["PMT"] != null && dr["PMT"].ToString() != "")
                         {
                             foreach (string path in dr["PMT"].ToString().TrimEnd(',').Split(','))

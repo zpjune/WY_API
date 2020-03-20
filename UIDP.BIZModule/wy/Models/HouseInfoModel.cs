@@ -32,5 +32,7 @@ namespace UIDP.BIZModule.wy.Models
         public string newFilePath { get; set; }
         public string LS { get; set; }
         public string JG { get; set; }
+
+        public string SS { get; set; }
     }
 }
