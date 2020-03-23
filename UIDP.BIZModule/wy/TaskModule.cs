@@ -133,5 +133,30 @@ namespace UIDP.BIZModule.wy
             }
             return r;
         }
+
+        public Dictionary<string, object> PushTask(string TASK_ID)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.PushTask(TASK_ID);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
     }
 }

@@ -176,9 +176,22 @@ namespace UIDP.BIZModule.wy
             {
                 return "空数据，导入失败！";
             }
-            string b = db.UpLoadHouseInfo(dt);
-
-            return "";
+            try
+            {
+                string b = db.UpLoadHouseInfo(dt);
+                if (b == "")
+                {
+                    return "";
+                }
+                else
+                {
+                    return b;
+                }
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
         }
 
         public Dictionary<string, object> ExportHouseInfo()

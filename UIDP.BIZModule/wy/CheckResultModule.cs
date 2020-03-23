@@ -22,7 +22,7 @@ namespace UIDP.BIZModule.wy
                     r["message"] = "成功";
                     r["code"] = 2000;
                     r["itmes"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["totoal"] = dt.Rows.Count;                   
+                    r["total"] = dt.Rows.Count;                   
                 }
                 else
                 {
@@ -53,7 +53,7 @@ namespace UIDP.BIZModule.wy
                     r["message"] = "成功";
                     r["code"] = 2000;
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["totoal"] = dt.Rows.Count;
+                    r["total"] = dt.Rows.Count;
                 }
                 else
                 {

@@ -33,13 +33,14 @@ namespace UIDP.ODS.wy
        public DataTable GetTaskProcessInfo(string year,string RWMC,string RWBH)
         {
             string sql= "select *,(t.total-t.complete) AS incomplete from" +
-                "(select a.RWBH,a.RWMC,a.RWKSSJ,a.RWJSSJ,a.RWFW,d.Name," +
-                "(SELECT COUNT(*)AS TOTAL FROM wy_houseinfo where a.RWFW=SSQY)AS total," +
-                "(select COUNT(distinct FWID) FROM wy_check_result  where a.TASK_ID=TASK_ID) AS complete" +
+                "(select a.RWBH,a.RWMC,a.RWKSSJ,a.RWJSSJ,a.RWFW,d.NAME," +
+                "(SELECT COUNT(*)AS TOTAL FROM wy_houseinfo where SSQY IN (SELECT REGION_CODE FROM wy_map_region WHERE TASK_ID=a.PLAN_DETAIL_ID AND IS_DELETE=0))AS total," +
+                "(select COUNT(distinct FWID) FROM wy_check_result  where a.PLAN_DETAIL_ID=TASK_ID AND IS_DELETE=0) AS complete" +
                 " FROM wy_check_task a" +
                 " join wy_checkPlan_detail b on a.PLAN_DETAIL_ID=b.PLAN_DETAIL_ID AND b.IS_DELETE=0 " +
                 " join wy_checkPlan c on b.PLAN_ID=c.PLAN_ID AND c.IS_DELETE=0" +
-                " left join tax_dictionary d on a.RWFW=d.Code AND d.ParentCode='SSQY'" +
+                //" left join tax_dictionary d on a.RWFW=d.Code AND d.ParentCode='SSQY'" +
+                " left join V_TaskRegion d on a.PLAN_DETAIL_ID=d.TASK_ID" +
                 " where c.JHND='" + year + "'";
             if (!string.IsNullOrEmpty(RWMC))
             {
@@ -49,7 +50,7 @@ namespace UIDP.ODS.wy
             {
                 sql += " AND  a.RWBH='" + RWBH + "'";
             }
-            sql += " GROUP BY a.RWBH,a.RWMC,a.RWKSSJ,a.RWJSSJ,a.RWFW,a.TASK_ID,d.Name)t";
+            sql += " GROUP BY a.RWBH,a.RWMC,a.RWKSSJ,a.RWJSSJ,a.RWFW,a.TASK_ID,a.PLAN_DETAIL_ID,d.Name)t";
             return db.GetDataTable(sql);
         }
     }

@@ -130,13 +130,13 @@ namespace WY.WebAPI.Controllers.wy
                         fs.Flush();
                     }
                     r["message"] = HM.UploadHouseInfo(filename);
-                    if (r["message"].ToString() != "")
+                    if (r["message"].ToString() == "")
                     {
-                        r["code"] = -1;
+                        r["code"] = 2000;
                     }
                     else
                     {
-                        r["code"] = 2000;
+                        r["code"] = -1;
                     }
                     Json(r);
                 }

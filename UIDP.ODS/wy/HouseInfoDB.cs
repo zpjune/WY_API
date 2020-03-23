@@ -107,7 +107,7 @@ namespace UIDP.ODS.wy
                 sql += GetSqlStr(dr["坐落位置"]);
                 sql += GetSqlStr(DicTable.Select("Name='" + dr["结构类型"] + "'AND ParentCode='JGLX'")[0]["Code"]);
                 sql += GetSqlStr(dr["资产原值"]);
-                sql += GetSqlStr(dr["所属区域"]);
+                sql += GetSqlStr(DicTable.Select("Name='" + dr["所属区域"] + "'AND ParentCode='SSQY'")[0]["Code"]);
                 sql += GetSqlStr(dr["水表编号"]);
                 sql += GetSqlStr(dr["电表编号"]);
                 sql += GetSqlStr(dr["总房款"]);

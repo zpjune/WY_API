@@ -27,7 +27,9 @@ namespace UIDP.ODS.wy
 
         public DataTable GetCheckPlanDetail(string PLAN_ID)
         {
-            return db.GetDataTable("SELECT * FROM wy_checkPlan_detail WHERE PLAN_ID='" + PLAN_ID + "'AND IS_DELETE=0");
+            return db.GetDataTable("SELECT a.*,b.NAME FROM wy_checkPlan_detail a " +
+                " left join V_TaskRegion b on a.PLAN_DETAIL_ID=b.TASK_ID" +
+                " WHERE PLAN_ID='" + PLAN_ID + "'AND IS_DELETE=0");
         }
 
         public string CreateCheckPlan(Dictionary<string,object> d)
@@ -54,10 +56,22 @@ namespace UIDP.ODS.wy
                 }
                 else
                 {
+                    string PLAN_DETAIL_ID = Guid.NewGuid().ToString();
                     string DetailSql = "INSERT INTO wy_checkPlan_detail(PLAN_DETAIL_ID,PLAN_ID,JCQY,JCNR,JCLX,PCCS,CJR,CJSJ,IS_DELETE)VALUES(";
-                    DetailSql += GetSqlStr(Guid.NewGuid());
+                    string[] JHQY = JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>();
+                    string JHQYstr = "";
+                    foreach(string jhqy in JHQY)
+                    {
+                        JHQYstr += jhqy + ",";
+                        string mapSql = "INSERT INTO wy_map_region(TASK_ID,REGION_CODE)values(";
+                        mapSql += GetSqlStr(PLAN_DETAIL_ID);
+                        mapSql += GetSqlStr(jhqy);
+                        mapSql = mapSql.TrimEnd(',') + ")";
+                        SqlList.Add(mapSql);
+                    }
+                    DetailSql += GetSqlStr(PLAN_DETAIL_ID);
                     DetailSql += GetSqlStr(PLAN_ID);
-                    DetailSql += GetSqlStr(CheckPlanDetail["JCQY"]);
+                    DetailSql += GetSqlStr(JHQYstr);
                     DetailSql += GetSqlStr(CheckPlanDetail["JCNR"]);
                     DetailSql += GetSqlStr(CheckPlanDetail["JCLX"]);
                     DetailSql += GetSqlStr(CheckPlanDetail["PCCS"], 1);
@@ -98,9 +112,15 @@ namespace UIDP.ODS.wy
                     else
                     {
                         string DetailSql = "INSERT INTO wy_checkPlan_detail(PLAN_DETAIL_ID,PLAN_ID,JCQY,JCNR,JCLX,PCCS,CJR,CJSJ,IS_DELETE)VALUES(";
+                        string[] JHQY = JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>();
+                        string JHQYstr = "";
+                        foreach (string jhqy in JHQY)
+                        {
+                            JHQYstr += jhqy + ",";
+                        }
                         DetailSql += GetSqlStr(Guid.NewGuid());
                         DetailSql += GetSqlStr(d["PLAN_ID"]);
-                        DetailSql += GetSqlStr(CheckPlanDetail["JCQY"]);
+                        DetailSql += GetSqlStr(JHQYstr);
                         DetailSql += GetSqlStr(CheckPlanDetail["JCNR"]);
                         DetailSql += GetSqlStr(CheckPlanDetail["JCLX"]);
                         DetailSql += GetSqlStr(CheckPlanDetail["PCCS"], 1);

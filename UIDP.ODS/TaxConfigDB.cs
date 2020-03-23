@@ -84,7 +84,7 @@ namespace UIDP.ODS
 
         public DataTable GetOptions(string ParentCode)
         {
-            string sql = "select Code,Name from tax_dictionary where ParentCode='" + ParentCode + "'";
+            string sql = "select Code,Name from tax_dictionary where ParentCode='" + ParentCode + "' ORDER BY SortNo";
             return db.GetDataTable(sql);
         }
         /// <summary>
