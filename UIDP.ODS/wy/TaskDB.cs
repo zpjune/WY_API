@@ -75,8 +75,8 @@ namespace UIDP.ODS.wy
         public DataSet GetPlanCheckAndDetail(string TASK_ID)
         {
             string CheckPlanDetailSql = "select a.*,b.NAME AS ALLPLACENAME from wy_checkPlan_detail a" +
-                " left join V_TaskRegion b on a.PLAN_DETAIL_ID= b.TASK_ID " +
-                " where PLAN_DETAIL_ID=(select PLAN_DETAIL_ID from wy_check_task where TASK_ID='" + TASK_ID + "')";
+                " left join V_TaskRegion b on a.PLAN_DETAIL_ID= b.PLAN_DETAIL_ID " +
+                " where a.PLAN_DETAIL_ID=(select PLAN_DETAIL_ID from wy_check_task where TASK_ID='" + TASK_ID + "')";
             string CheckPlanSql = "select * from wy_checkPlan where PLAN_ID=(" +
                 " SELECT PLAN_ID FROM wy_checkPlan_detail WHERE PLAN_DETAIL_ID=(" +
                 " SELECT PLAN_DETAIL_ID FROM wy_check_task WHERE TASK_ID='" + TASK_ID + "'))";

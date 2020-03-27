@@ -28,7 +28,7 @@ namespace UIDP.ODS.wy
         public DataTable GetCheckPlanDetail(string PLAN_ID)
         {
             return db.GetDataTable("SELECT a.*,b.NAME FROM wy_checkPlan_detail a " +
-                " left join V_TaskRegion b on a.PLAN_DETAIL_ID=b.TASK_ID" +
+                " left join V_TaskRegion b on a.PLAN_DETAIL_ID=b.PLAN_DETAIL_ID" +
                 " WHERE PLAN_ID='" + PLAN_ID + "'AND IS_DELETE=0");
         }
 
@@ -58,12 +58,11 @@ namespace UIDP.ODS.wy
                 {
                     string PLAN_DETAIL_ID = Guid.NewGuid().ToString();
                     string DetailSql = "INSERT INTO wy_checkPlan_detail(PLAN_DETAIL_ID,PLAN_ID,JCQY,JCNR,JCLX,PCCS,CJR,CJSJ,IS_DELETE)VALUES(";
-                    string[] JHQY = JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>();
                     string JHQYstr = "";
-                    foreach(string jhqy in JHQY)
+                    foreach(string jhqy in JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>())
                     {
                         JHQYstr += jhqy + ",";
-                        string mapSql = "INSERT INTO wy_map_region(TASK_ID,REGION_CODE)values(";
+                        string mapSql = "INSERT INTO wy_map_region(PLAN_DETAIL_ID,REGION_CODE)values(";
                         mapSql += GetSqlStr(PLAN_DETAIL_ID);
                         mapSql += GetSqlStr(jhqy);
                         mapSql = mapSql.TrimEnd(',') + ")";
@@ -111,14 +110,19 @@ namespace UIDP.ODS.wy
                     }
                     else
                     {
+                        string PLAN_DETAIL_ID = Guid.NewGuid().ToString();
                         string DetailSql = "INSERT INTO wy_checkPlan_detail(PLAN_DETAIL_ID,PLAN_ID,JCQY,JCNR,JCLX,PCCS,CJR,CJSJ,IS_DELETE)VALUES(";
-                        string[] JHQY = JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>();
                         string JHQYstr = "";
-                        foreach (string jhqy in JHQY)
+                        foreach (string jhqy in JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>())
                         {
                             JHQYstr += jhqy + ",";
+                            string mapSql = "INSERT INTO wy_map_region(PLAN_DETAIL_ID,REGION_CODE)values(";
+                            mapSql += GetSqlStr(PLAN_DETAIL_ID);
+                            mapSql += GetSqlStr(jhqy);
+                            mapSql = mapSql.TrimEnd(',') + ")";
+                            SqlList.Add(mapSql);
                         }
-                        DetailSql += GetSqlStr(Guid.NewGuid());
+                        DetailSql += GetSqlStr(PLAN_DETAIL_ID);
                         DetailSql += GetSqlStr(d["PLAN_ID"]);
                         DetailSql += GetSqlStr(JHQYstr);
                         DetailSql += GetSqlStr(CheckPlanDetail["JCNR"]);
@@ -133,31 +137,46 @@ namespace UIDP.ODS.wy
                 }
                 else
                 {
-                    if (CheckPlanDetail.ContainsValue(""))
-                    {
-                        return "您输入的详细计划内有空值！请仔细修改后再提交表单";
-                    }
-                    else
-                    {
+                    //if (CheckPlanDetail.ContainsValue(""))
+                    //{
+                    //    return "您输入的详细计划内有空值！请仔细修改后再提交表单";
+                    //}
+                    //else
+                    //{
                         if (CheckPlanDetail["IS_DELETE"].ToString() == "0")
                         {
-                            string DetailSql = "UPDATE wy_checkPlan_detail SET JCQY=" + GetSqlStr(CheckPlanDetail["JCQY"]);
-                            DetailSql += " JCNR=" + GetSqlStr(CheckPlanDetail["JCNR"]);
-                            DetailSql += " JCLX=" + GetSqlStr(CheckPlanDetail["JCLX"]);
-                            DetailSql += " PCCS=" + GetSqlStr(CheckPlanDetail["PCCS"], 1);
-                            DetailSql += " BJR=" + GetSqlStr(d["userId"]);
-                            DetailSql += " BJSJ=" + GetSqlStr(DateTime.Now);
-                            DetailSql = DetailSql.TrimEnd(',') + " where PLAN_DETAIL_ID='" + CheckPlanDetail["PLAN_DETAIL_ID"] + "'";
-                            SqlList.Add(DetailSql);
-                        }
+                            string DelMapSql = "DELETE FROM wy_map_region WHERE PLAN_DETAIL_ID='" + CheckPlanDetail["PLAN_DETAIL_ID"] + "'";
+                            SqlList.Add(DelMapSql);
+                            string JHQYstr = "";
+                            foreach (string jhqy in JArray.FromObject(CheckPlanDetail["JCQY"]).ToObject<string[]>())
+                            {
+                                JHQYstr += jhqy + ",";
+                                string mapSql = "INSERT INTO wy_map_region(PLAN_DETAIL_ID,REGION_CODE)values(";
+                                mapSql += GetSqlStr(CheckPlanDetail["PLAN_DETAIL_ID"]);
+                                mapSql += GetSqlStr(jhqy);
+                                mapSql = mapSql.TrimEnd(',') + ")";
+                                SqlList.Add(mapSql);
+                            }
+                        string DetailSql = "UPDATE wy_checkPlan_detail SET JCQY=" + GetSqlStr(JHQYstr);
+                        DetailSql += " JCNR=" + GetSqlStr(CheckPlanDetail["JCNR"]);
+                        DetailSql += " JCLX=" + GetSqlStr(CheckPlanDetail["JCLX"]);
+                        DetailSql += " PCCS=" + GetSqlStr(CheckPlanDetail["PCCS"], 1);
+                        DetailSql += " BJR=" + GetSqlStr(d["userId"]);
+                        DetailSql += " BJSJ=" + GetSqlStr(DateTime.Now);
+                        DetailSql = DetailSql.TrimEnd(',') + " where PLAN_DETAIL_ID='" + CheckPlanDetail["PLAN_DETAIL_ID"] + "'";
+                        SqlList.Add(DetailSql);
+                    }
                         else
                         {
+
                             string DetailSql = "UPDATE wy_checkPlan_detail SET IS_DELETE=1 " +
                                 " where PLAN_DETAIL_ID='" + CheckPlanDetail["PLAN_DETAIL_ID"] + "'";
                             SqlList.Add(DetailSql);
+                            string DelMapSql = "DELETE FROM wy_map_region WHERE PLAN_DETAIL_ID='" + CheckPlanDetail["PLAN_DETAIL_ID"] + "'";
+                            SqlList.Add(DelMapSql);
                         }
                         
-                    }
+                    //}
                         
                 } 
             }

@@ -73,7 +73,7 @@ namespace WY.WebAPI.Controllers.wy
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("GetHouseInfo")]
-        public IActionResult GetHouseInfo(string FWMC, string LSFGS, string FWSX, int limit, int page,string baseURL) => Ok(HM.GetHouseInfo(FWMC, LSFGS, FWSX, limit, page, baseURL));
+        public IActionResult GetHouseInfo(string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page,string baseURL) => Ok(HM.GetHouseInfo(FWBH,FWMC, LSFGS, FWSX, limit, page, baseURL));
 
         /// <summary>
         /// 新建房屋信息

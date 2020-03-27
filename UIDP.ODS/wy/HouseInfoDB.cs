@@ -9,13 +9,17 @@ namespace UIDP.ODS.wy
     public class HouseInfoDB
     {
         DBTool db = new DBTool("");
-        public DataSet GetHouseInfo(string FWMC,string LSFGS,string FWSX,int limit, int page)
+        public DataSet GetHouseInfo(string FWBH,string FWMC,string LSFGS,string FWSX,int limit, int page)
         {
             string sql = "select {0} from wy_houseinfo a" +
                 " left join tax_dictionary b on a.LSFGS=b.Code AND b.ParentCode='LSFGS'" +
                 " left join tax_dictionary c on a.JGLX=c.Code AND c.ParentCode='JGLX'" +
                 " left join tax_dictionary d on a.SSQY=d.Code AND d.ParentCode='SSQY'" +
                 " WHERE a.IS_DELETE=0";
+            if (!string.IsNullOrEmpty(FWBH))
+            {
+                sql += " AND FWBH = '" + FWBH + "'";
+            }
             if (!string.IsNullOrEmpty(FWMC))
             {
                 sql += " AND FWMC LIKE '%" + FWMC + "%'";

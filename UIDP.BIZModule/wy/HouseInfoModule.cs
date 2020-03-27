@@ -11,12 +11,12 @@ namespace UIDP.BIZModule.wy
     public class HouseInfoModule
     {
         HouseInfoDB db = new HouseInfoDB();
-        public Dictionary<string, object> GetHouseInfo(string FWMC, string LSFGS, string FWSX, int limit, int page, string baseURL)
+        public Dictionary<string, object> GetHouseInfo(string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page, string baseURL)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetHouseInfo(FWMC, LSFGS, FWSX, limit, page);
+                DataSet ds = db.GetHouseInfo(FWBH,FWMC, LSFGS, FWSX, limit, page);
                 List<HouseInfoModel> list = new List<HouseInfoModel>();
                 if (ds.Tables[0].Rows.Count > 0)
                 {

@@ -34,13 +34,13 @@ namespace UIDP.ODS.wy
         {
             string sql= "select *,(t.total-t.complete) AS incomplete from" +
                 "(select a.RWBH,a.RWMC,a.RWKSSJ,a.RWJSSJ,a.RWFW,d.NAME," +
-                "(SELECT COUNT(*)AS TOTAL FROM wy_houseinfo where SSQY IN (SELECT REGION_CODE FROM wy_map_region WHERE TASK_ID=a.PLAN_DETAIL_ID AND IS_DELETE=0))AS total," +
+                "(SELECT COUNT(*)AS TOTAL FROM wy_houseinfo where SSQY IN (SELECT REGION_CODE FROM wy_map_region WHERE PLAN_DETAIL_ID=a.PLAN_DETAIL_ID AND IS_DELETE=0))AS total," +
                 "(select COUNT(distinct FWID) FROM wy_check_result  where a.PLAN_DETAIL_ID=TASK_ID AND IS_DELETE=0) AS complete" +
                 " FROM wy_check_task a" +
                 " join wy_checkPlan_detail b on a.PLAN_DETAIL_ID=b.PLAN_DETAIL_ID AND b.IS_DELETE=0 " +
                 " join wy_checkPlan c on b.PLAN_ID=c.PLAN_ID AND c.IS_DELETE=0" +
                 //" left join tax_dictionary d on a.RWFW=d.Code AND d.ParentCode='SSQY'" +
-                " left join V_TaskRegion d on a.PLAN_DETAIL_ID=d.TASK_ID" +
+                " left join V_TaskRegion d on a.PLAN_DETAIL_ID=d.PLAN_DETAIL_ID" +
                 " where c.JHND='" + year + "'";
             if (!string.IsNullOrEmpty(RWMC))
             {
