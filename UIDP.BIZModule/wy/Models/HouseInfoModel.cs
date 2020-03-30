@@ -34,5 +34,7 @@ namespace UIDP.BIZModule.wy.Models
         public string JG { get; set; }
 
         public string SS { get; set; }
+
+        public string CID { get; set; }
     }
 }

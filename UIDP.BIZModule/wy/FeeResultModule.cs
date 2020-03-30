@@ -141,7 +141,7 @@ namespace UIDP.BIZModule.wy
                         if (datetime.AddMonths(MonthNum) > JZR)
                         {
                             string sql = "INSERT INTO wy_pay_record" +
-                                "(RECORD_ID,JFLX,FWID,JFJE,JFZT,SFTZ,JFCS,YXQS,YXQZ,CREATE_TIME,CZ_SHID,OPEN_ID,CONFIRM_RECIVEMONEY)VALUES(";
+                                "(RECORD_ID,JFLX,FWID,JFJE,JFZT,SFTZ,JFCS,YXQS,YXQZ,CREATE_TIME,CZ_SHID,OPEN_ID,CONFIRM_RECIVEMONEY,FEE_ID)VALUES(";
                             sql += GetSqlStr(Guid.NewGuid());
                             sql += GetSqlStr(0, 1);//物业费
                             sql += GetSqlStr(dr["FWID"]);
@@ -155,6 +155,7 @@ namespace UIDP.BIZModule.wy
                             sql += GetSqlStr(dr["CZ_SHID"]);
                             sql += GetSqlStr(dr["OPEN_ID"]);
                             sql += GetSqlStr(0, 1);
+                            sql += GetSqlStr(dr["FEE_ID"]);
                             sql = sql.TrimEnd(',') + ")";
                             list.Add(sql);
                         }
@@ -190,7 +191,7 @@ namespace UIDP.BIZModule.wy
                     if (datetime.AddMonths(MonthNum) > JZR)
                     {
                         string sql = "INSERT INTO wy_pay_record" +
-                               "(RECORD_ID,JFLX,FWID,JFJE,JFZT,SFTZ,JFCS,YXQS,YXQZ,CREATE_TIME,CZ_SHID,OPEN_ID,CONFIRM_RECIVEMONEY)VALUES(";
+                               "(RECORD_ID,JFLX,FWID,JFJE,JFZT,SFTZ,JFCS,YXQS,YXQZ,CREATE_TIME,CZ_SHID,OPEN_ID,CONFIRM_RECIVEMONEY,FEE_ID)VALUES(";
                         sql += GetSqlStr(Guid.NewGuid());
                         sql += GetSqlStr(0, 1);//物业费
                         sql += GetSqlStr(dr["FWID"]);
@@ -204,6 +205,7 @@ namespace UIDP.BIZModule.wy
                         sql += GetSqlStr(dr["CZ_SHID"]);
                         sql += GetSqlStr(dr["OPEN_ID"]);
                         sql += GetSqlStr(0, 1);
+                        sql += GetSqlStr(dr["FEE_ID"]);
                         sql = sql.TrimEnd(',') + ")";
                         list.Add(sql);
                     }

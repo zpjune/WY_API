@@ -89,25 +89,14 @@ namespace UIDP.ODS.wy
                 LeaseSql += GetSqlStr(d["ZLZE"], 1);
                 LeaseSql += GetSqlStr(d["ZLYJ"], 1);
                 LeaseSql += GetSqlStr(d["ZLYS"], 1);
-                LeaseSql += GetSqlStr(d["ZJJFFS"], 1);
+                LeaseSql += GetSqlStr(d["ZJJFFS"]);
                 LeaseSql += GetSqlStr(d["userId"]);
                 LeaseSql += GetSqlStr(DateTime);
                 LeaseSql += GetSqlStr(0, 1);
                 LeaseSql = LeaseSql.TrimEnd(',') + ")";
                 list.Add(LeaseSql);
-                //物业费信息语句
-                FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
-                FeeSql += GetSqlStr(FEE_ID);
-                FeeSql += GetSqlStr(d["WYJFFS"]);
-                FeeSql += GetSqlStr(d["WYJZSJ"]);
-                FeeSql += "(SELECT JZMJ* " + d["WYDJ"] +
-                    "FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
-                FeeSql += GetSqlStr(0, 1);
-                FeeSql += GetSqlStr(d["WYDJ"], 1);
-                FeeSql = FeeSql.TrimEnd(',') + ")";
-                list.Add(FeeSql);
                 //租户信息插入语句
-                ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,SUBLET_ID,TELEPHONE,E_MAIL," +
+                ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
                    "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,LEASE_ID,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
                 ShopInfoSql += GetSqlStr(CZ_SHID);
                 ShopInfoSql += GetSqlStr(d["JYNR"]);
@@ -115,15 +104,7 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(d["ZHXB"], 1);
                 ShopInfoSql += GetSqlStr(d["SFZH"]);
                 ShopInfoSql += GetSqlStr(d["MOBILE_PHONE"]);
-                ShopInfoSql += GetSqlStr(d["IS_SUBLET"]);
-                if (d["IS_SUBLET"].ToString() == "1")
-                {
-                    ShopInfoSql += GetSqlStr(SUBLET_ID);
-                }
-                else
-                {
-                    ShopInfoSql += GetSqlStr("");
-                }
+                ShopInfoSql += GetSqlStr(0,1);
                 ShopInfoSql += GetSqlStr(d["TELEPHONE"]);
                 ShopInfoSql += GetSqlStr(d["E_MAIL"]);
                 ShopInfoSql += GetSqlStr(0, 1);
@@ -198,16 +179,6 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(d["userType"],1);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
                 list.Add(ShopInfoSql);
-                FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
-                FeeSql += GetSqlStr(FEE_ID);
-                FeeSql += GetSqlStr(d["WYJFFS"]);
-                FeeSql += GetSqlStr(d["WYJZSJ"]);
-                FeeSql += "(SELECT JZMJ* " + d["WYDJ"] +
-                     "FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
-                FeeSql += GetSqlStr(0, 1);
-                FeeSql += GetSqlStr(d["WYDJ"], 1);
-                FeeSql = FeeSql.TrimEnd(',') + ")";
-                list.Add(FeeSql);
                 HouseUpdateSql = "UPDATE wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + CZ_SHID + "' WHERE FWID='" + d["FWID"] + "'";
                 list.Add(HouseUpdateSql);
             }
@@ -215,7 +186,17 @@ namespace UIDP.ODS.wy
             {
                 throw new Exception("未检测到正确的用户类型！");
             }
-            
+            FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
+            FeeSql += GetSqlStr(FEE_ID);
+            FeeSql += GetSqlStr(d["WYJFFS"]);
+            FeeSql += GetSqlStr(d["WYJZSJ"]);
+            FeeSql += "(SELECT JZMJ* " + d["WYDJ"] +
+                " FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
+            FeeSql += GetSqlStr(0, 1);
+            FeeSql += GetSqlStr(d["WYDJ"], 1);
+            FeeSql = FeeSql.TrimEnd(',') + ")";
+            list.Add(FeeSql);
+
             return db.Executs(list);
 
         }
@@ -231,9 +212,8 @@ namespace UIDP.ODS.wy
                 list.Add(RollBackSql);
                 
             }
-            //更新新房屋的状态  
-            string UpdateHouseSql = "update wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + d["CZ_SHID"] + "' WHERE FWID='" + d["FWID"] + "'";
-            list.Add(UpdateHouseSql);
+            //string UpdateHouseSql = "update wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + d["CZ_SHID"] + "' WHERE FWID='" + d["FWID"] + "'";
+            //list.Add(UpdateHouseSql);
             if (d["userType"].ToString() == "1")//出租用户语句
             {
                 /***
@@ -248,7 +228,7 @@ namespace UIDP.ODS.wy
                 LeaseSql += "ZLZE=" + GetSqlStr(d["ZLZE"], 1);
                 LeaseSql += "ZLYJ=" + GetSqlStr(d["ZLYJ"], 1);
                 LeaseSql += "ZLYS=" + GetSqlStr(d["ZLYS"], 1);
-                LeaseSql += "ZJJFFS=" + GetSqlStr(d["ZJJFFS"], 1);
+                LeaseSql += "ZJJFFS=" + GetSqlStr(d["ZJJFFS"]);
                 LeaseSql += "BJR=" + GetSqlStr(d["userId"]);
                 LeaseSql += "BJSJ=" + GetSqlStr(DateTime.Now);
                 LeaseSql = LeaseSql.TrimEnd(',') + " WHERE LEASE_ID='" + d["LEASE_ID"] + "'";
@@ -270,15 +250,6 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
                 list.Add(ShopInfoSql);
-                //修改物业信息
-                //string FeeSql = "UPDATE wy_RopertyCosts SET WYJFFS=" + GetSqlStr(d["WYJFFS"]);
-                //FeeSql += "WYJZSJ=" + GetSqlStr(d["WYJZSJ"]);
-                ////FeeSql += "WYJZ=" + GetSqlStr(d["WYJZ"], 1);
-                //FeeSql += "WYJZ=(SELECT JZMJ* " + d["WYDJ"] +
-                //    "FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
-                //FeeSql += "WYDJ=" + GetSqlStr(d["WYDJ"]);
-                //FeeSql = FeeSql.TrimEnd(',') + " WHERE FEE_ID='" + d["FEE_ID"] + "'";
-                //list.Add(FeeSql);
             }
             else if (d["userType"].ToString() == "2")
             {
@@ -334,30 +305,31 @@ namespace UIDP.ODS.wy
                         SuletSql = SuletSql.TrimEnd(',') + ")";
                     }
                     list.Add(SuletSql);
-                    //修改商户信息
-                    string ShopInfoSql = "UPDATE wy_shopinfo SET JYNR=" + GetSqlStr(d["JYNR"]);
-                    ShopInfoSql += "ZHXM=" + GetSqlStr(d["ZHXM"]);
-                    ShopInfoSql += "ZHXB=" + GetSqlStr(d["ZHXB"], 1);
-                    ShopInfoSql += "SFZH=" + GetSqlStr(d["SFZH"]);
-                    ShopInfoSql += "MOBILE_PHONE=" + GetSqlStr(d["MOBILE_PHONE"]);
-                    ShopInfoSql += "IS_SUBLET=" + GetSqlStr(d["IS_SUBLET"]);
-                    if (!string.IsNullOrEmpty(SUBLET_ID))
-                    {
-                        ShopInfoSql += "SUBLET_ID=" + GetSqlStr(SUBLET_ID);
-                    }
-                    ShopInfoSql += "TELEPHONE=" + GetSqlStr(d["TELEPHONE"]);
-                    ShopInfoSql += "E_MAIL=" + GetSqlStr(d["E_MAIL"]);
-                    ShopInfoSql += "BJR=" + GetSqlStr(d["userId"]);
-                    ShopInfoSql += "BJSJ=" + GetSqlStr(DateTime.Now);
-                    ShopInfoSql += "SHOP_NAME=" + GetSqlStr(d["SHOP_NAME"]);
-                    ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
-                    ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
-                    ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
-                    ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
-                    list.Add(ShopInfoSql);
-
                 }
-                //修改物业信息
+                string ShopInfoSql = "UPDATE wy_shopinfo SET JYNR=" + GetSqlStr(d["JYNR"]);
+                ShopInfoSql += "ZHXM=" + GetSqlStr(d["ZHXM"]);
+                ShopInfoSql += "ZHXB=" + GetSqlStr(d["ZHXB"], 1);
+                ShopInfoSql += "SFZH=" + GetSqlStr(d["SFZH"]);
+                ShopInfoSql += "MOBILE_PHONE=" + GetSqlStr(d["MOBILE_PHONE"]);
+                ShopInfoSql += "IS_SUBLET=" + GetSqlStr(d["IS_SUBLET"]);
+                if (!string.IsNullOrEmpty(SUBLET_ID) && d["IS_SUBLET"].ToString() == "1")
+                {
+                    ShopInfoSql += "SUBLET_ID=" + GetSqlStr(SUBLET_ID);
+                }
+                else
+                {
+                    ShopInfoSql += "SUBLET_ID=" + GetSqlStr("");
+                }
+                ShopInfoSql += "TELEPHONE=" + GetSqlStr(d["TELEPHONE"]);
+                ShopInfoSql += "E_MAIL=" + GetSqlStr(d["E_MAIL"]);
+                ShopInfoSql += "BJR=" + GetSqlStr(d["userId"]);
+                ShopInfoSql += "BJSJ=" + GetSqlStr(DateTime.Now);
+                ShopInfoSql += "SHOP_NAME=" + GetSqlStr(d["SHOP_NAME"]);
+                ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
+                ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
+                ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
+                ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
+                list.Add(ShopInfoSql);
             }
             string FeeSql = "UPDATE wy_RopertyCosts SET WYJFFS=" + GetSqlStr(d["WYJFFS"]);
             FeeSql += "WYJZSJ=" + GetSqlStr(d["WYJZSJ"]);

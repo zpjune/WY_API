@@ -47,6 +47,7 @@ namespace UIDP.BIZModule.wy
                         item.LS = dr["LS"] == null ? null : dr["LS"].ToString();
                         item.JG = dr["JG"] == null ? null : dr["JG"].ToString();
                         item.SS=dr["SS"] == null ? null : dr["SS"].ToString();
+                        item.CID = dr["CID"] == null ? null : dr["CID"].ToString();
                         item.PMT = new List<file>();
                         if (dr["PMT"] != null && dr["PMT"].ToString() != "")
                         {
