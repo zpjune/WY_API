@@ -197,18 +197,43 @@ namespace UIDP.BIZModule.wy
         public Dictionary<string, object> EndLease(string FWID,string CZ_SHID)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
+            bool IsArrears = false;
             try
             {
-                string b = db.EndLease(FWID,CZ_SHID);
-                if (b == "")
+                DataTable InfoDic = db.GetShopCostInfo(FWID);
+                if (InfoDic.Rows.Count > 0)
                 {
-                    r["message"] = "成功";
-                    r["code"] = 2000;
-                }
-                else
-                {
-                    r["message"] = b;
-                    r["code"] = -1;
+                    foreach (DataRow dr in InfoDic.Rows)
+                    {
+                        if (dr["JFLX"].ToString() == "0")
+                        {
+                            if (!(Convert.ToDateTime(dr["YXQZ"]) > DateTime.Now))
+                            {
+                                IsArrears = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!IsArrears)
+                    {
+                        string b = db.EndLease(FWID, CZ_SHID);
+                        if (b == "")
+                        {
+                            r["message"] = "成功";
+                            r["code"] = 2000;
+                        }
+                        else
+                        {
+                            r["message"] = b;
+                            r["code"] = -1;
+                        }
+                    }
+                    else
+                    {
+                        r["message"] = "还有欠费信息！";
+                        r["code"] = -1;
+                    }
+                    
                 }
             }
             catch (Exception e)

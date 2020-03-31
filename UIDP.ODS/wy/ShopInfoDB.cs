@@ -38,7 +38,7 @@ namespace UIDP.ODS.wy
 
         public DataTable GetShopInfoDetail(string CZ_SHID)
         {
-            string sql = "select a.FWID,a.FWBH,a.FWMC,a.JZMJ,a.ZLWZ,b.*,c.Name,a.FWID AS OLDID,d.LEASE_ID,d.ZLKSSJ,d.ZLZZSJ,d.ZLZE,d.ZLYJ,d.ZLYS,d.ZJJFFS,e.FEE_ID,e.WYJFFS,e.WYJZSJ,e.WYJZ,e.WYDJ," +
+            string sql = "select a.FWID,a.FWBH,a.FWMC,a.JZMJ,a.ZLWZ,b.*,c.Name,a.FWID AS OLDID,d.LEASE_ID,d.ZLKSSJ,d.ZLZZSJ,d.ZLZE,d.ZLYJ,d.ZLYS,d.ZJJFFS,e.FEE_ID,e.WYJFFS,e.WYJZSJ,e.WYJZ,e.WYDJ,g.Name AS NAME1,h.Name AS NAME2," +
                 " f.CZ_SHID AS CZ_SHID1,f.JYNR AS JYNR1,f.ZHXM AS ZHXM1,f.ZHXB AS ZHXB1,f.SFZH AS SFZH1,f.MOBILE_PHONE AS MOBILE_PHONE1,f.TELEPHONE AS TELEPHONE1,f.E_MAIL AS E_MAIL1,f.SHOPBH,f.SHOP_NAME,f.ZHLX" +
                 " from wy_houseinfo a " +
                 " join wy_shopinfo b ON a.CZ_SHID=b.CZ_SHID" +
@@ -46,6 +46,8 @@ namespace UIDP.ODS.wy
                 " left join wy_Leasinginfo d on b.LEASE_ID=d.LEASE_ID and d.IS_DELETE=0" +
                 " left join wy_RopertyCosts e on b.FEE_ID=e.FEE_ID AND e.IS_DELETE=0" +
                 " left join wy_shopinfo f on b.SUBLET_ID=f.CZ_SHID AND b.IS_SUBLET=1 AND f.IS_DELETE=0" +
+                " left join tax_dictionary g on g.Code=d.ZJJFFS AND g.ParentCode='PAY_WAY'" +
+                " left join tax_dictionary h on h.Code=e.WYJFFS AND h.ParentCode='PAY_WAY'" +
                 " where a.IS_DELETE=0 AND b.IS_DELETE=0 AND b.CZ_SHID='" + CZ_SHID + "'";
             return db.GetDataTable(sql);
         }
@@ -352,6 +354,12 @@ namespace UIDP.ODS.wy
             string sql = " UPDATE wy_shopinfo set IS_PASS=0 where CZ_SHID='" + CZ_SHID + "'";
             return db.ExecutByStringResult(sql);
         }
+        public DataTable GetShopCostInfo(string FWID)
+        {
+            string sql = "SELECT * FROM V_pay_record WHERE FWID='" + FWID + "'";
+            return db.GetDataTable(sql);
+        }
+
         public string EndLease(string FWID, string CZ_SHID)
         {
             string HouseSql = "UPDATE wy_houseinfo SET FWSX=0,CZ_SHID=NULL WHERE FWID='" + FWID + "'";
