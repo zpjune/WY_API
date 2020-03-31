@@ -197,43 +197,27 @@ namespace UIDP.BIZModule.wy
         public Dictionary<string, object> EndLease(string FWID,string CZ_SHID)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
-            bool IsArrears = false;
             try
             {
-                DataTable InfoDic = db.GetShopCostInfo(FWID);
-                if (InfoDic.Rows.Count > 0)
+                string mes = JudgeArrears(FWID);
+                if (mes == "")
                 {
-                    foreach (DataRow dr in InfoDic.Rows)
+                    string b = db.EndLease(FWID, CZ_SHID);
+                    if (b == "")
                     {
-                        if (dr["JFLX"].ToString() == "0")
-                        {
-                            if (!(Convert.ToDateTime(dr["YXQZ"]) > DateTime.Now))
-                            {
-                                IsArrears = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!IsArrears)
-                    {
-                        string b = db.EndLease(FWID, CZ_SHID);
-                        if (b == "")
-                        {
-                            r["message"] = "成功";
-                            r["code"] = 2000;
-                        }
-                        else
-                        {
-                            r["message"] = b;
-                            r["code"] = -1;
-                        }
+                        r["message"] = "成功";
+                        r["code"] = 2000;
                     }
                     else
                     {
-                        r["message"] = "还有欠费信息！";
+                        r["message"] = b;
                         r["code"] = -1;
                     }
-                    
+                }
+                else
+                {
+                    r["message"] = mes;
+                    r["code"] = -1;
                 }
             }
             catch (Exception e)
@@ -308,17 +292,27 @@ namespace UIDP.BIZModule.wy
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                string b = db.SecondHand(d);
-                if (b == "")
+                string mes = JudgeArrears(d["FWID"].ToString());
+                if (mes == "")
                 {
-                    r["message"] = "成功";
-                    r["code"] = 2000;
+                    string b = db.SecondHand(d);
+                    if (b == "")
+                    {
+                        r["message"] = "成功";
+                        r["code"] = 2000;
+                    }
+                    else
+                    {
+                        r["message"] = b;
+                        r["code"] = -1;
+                    }
                 }
                 else
                 {
-                    r["message"] = b;
                     r["code"] = -1;
+                    r["message"] = mes;
                 }
+
             }
             catch (Exception e)
             {
@@ -356,6 +350,84 @@ namespace UIDP.BIZModule.wy
                 r["code"] = -1;
             }
             return r;
+        }
+
+        public string JudgeArrears(string FWID)
+        {
+            string mes = "";
+            DataTable InfoDic = db.GetShopCostInfo(FWID);
+            if (InfoDic.Rows.Count > 0)
+            {
+                foreach (DataRow dr in InfoDic.Rows)
+                {
+                    if (dr["JFLX"].ToString() == "0")//物业费
+                    {
+                        if (dr["JFZT"].ToString() == "0")
+                        {
+                            if (!(Convert.ToDateTime(dr["YXQS"]) > DateTime.Now))
+                            {
+                                mes += "当前商户存在物业费欠缴情况!";
+                            }
+                        }
+                        if (dr["JFZT"].ToString() == "1")
+                        {
+                            if (!(Convert.ToDateTime(dr["YXQZ"]) > DateTime.Now))
+                            {
+                                mes += "当前商户存在物业费欠缴情况!";
+                            }
+                        }
+                    }
+                    else if (dr["JFLX"].ToString() == "1")//水费
+                    {
+                        if (Convert.ToDecimal(dr["SURPLUSVALUE"]) < 0)
+                        {
+                            mes += "当前商户存在水费欠缴情况!";
+                        }
+                    }
+                    else if (dr["JFLX"].ToString() == "2")
+                    {
+                        if (Convert.ToDecimal(dr["SURPLUSVALUE"]) < 0)
+                        {
+                            mes += "当前商户存在电费欠缴情况!";
+                        }
+                    }
+                }
+            }
+            return mes;
+        }
+
+        public string uploadCZSHOPInfo(string filePath)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            List<string> list = new List<string>();
+            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\出租商户模板.xls";//原始文件
+            string path = filePath;//原始文件
+            string mes = "";
+            DataTable dt = new DataTable();
+
+            UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
+            tool.GetDataTable(System.IO.File.OpenRead(path), path, modePath, ref mes, ref dt);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                return "空数据，导入失败！";
+            }
+            try
+            {
+                //string b = db.UpLoadHouseInfo(dt);
+                string b = "";
+                if (b == "")
+                {
+                    return "";
+                }
+                else
+                {
+                    return b;
+                }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
     }
 }

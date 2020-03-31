@@ -99,5 +99,12 @@ namespace WY.WebAPI.Controllers.wy
         /// <returns></returns>
         [HttpPost("ConfirmReciveMoney")]
         public IActionResult ConfirmReciveMoney([FromBody]JArray value) => Ok(FR.ConfirmReciveMoney(value.ToObject<List<Dictionary<string, object>>>()));
+        /// <summary>
+        /// 导出缴费通知单功能
+        /// </summary>
+        /// <param name="JFSTATUS"></param>
+        /// <returns></returns>
+        [HttpGet("ExportFeeResult")]
+        public IActionResult ExportFeeResult(string JFSTATUS) => Ok(FR.ExportFeeResult(JFSTATUS));
     }
 }

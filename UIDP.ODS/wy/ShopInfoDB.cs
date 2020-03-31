@@ -99,7 +99,8 @@ namespace UIDP.ODS.wy
                 list.Add(LeaseSql);
                 //租户信息插入语句
                 ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,LEASE_ID,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,LEASE_ID,FEE_ID,IS_DELETE,FWID,SHOP_STATUS," +
+                   "ZXYJ,ZXYJJFSJ,ZXYJTFSJ,XFBZJ,XFBZJJFSJ,XFBZJTFSJ)values(";
                 ShopInfoSql += GetSqlStr(CZ_SHID);
                 ShopInfoSql += GetSqlStr(d["JYNR"]);
                 ShopInfoSql += GetSqlStr(d["ZHXM"]);
@@ -120,6 +121,12 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(0, 1);
                 ShopInfoSql += GetSqlStr(d["FWID"]);
                 ShopInfoSql += GetSqlStr(d["userType"],1);
+                ShopInfoSql += GetSqlStr(d["ZXYJ"],1);
+                ShopInfoSql += GetSqlStr(d["ZXYJJFSJ"]);
+                ShopInfoSql += GetSqlStr(d["ZXYJTFSJ"]);
+                ShopInfoSql += GetSqlStr(d["XFBZJ"],1);
+                ShopInfoSql += GetSqlStr(d["XFBZJJFSJ"]);
+                ShopInfoSql += GetSqlStr(d["XFBZJTFSJ"]);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
                 list.Add(ShopInfoSql);
                 //房屋信息更新语句
@@ -129,7 +136,8 @@ namespace UIDP.ODS.wy
             else if(d["userType"].ToString() == "2")//出售用户
             {
                 ShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,SUBLET_ID,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS," +
+                   "ZXYJ,ZXYJJFSJ,ZXYJTFSJ,XFBZJ,XFBZJJFSJ,XFBZJTFSJ)values(";
                 ShopInfoSql += GetSqlStr(CZ_SHID);
                 ShopInfoSql += GetSqlStr(d["JYNR"]);
                 ShopInfoSql += GetSqlStr(d["ZHXM"]);
@@ -179,6 +187,12 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += GetSqlStr(0, 1);
                 ShopInfoSql += GetSqlStr(d["FWID"]);
                 ShopInfoSql += GetSqlStr(d["userType"],1);
+                ShopInfoSql += GetSqlStr(d["ZXYJ"], 1);
+                ShopInfoSql += GetSqlStr(d["ZXYJJFSJ"]);
+                ShopInfoSql += GetSqlStr(d["ZXYJTFSJ"]);
+                ShopInfoSql += GetSqlStr(d["XFBZJ"], 1);
+                ShopInfoSql += GetSqlStr(d["XFBZJJFSJ"]);
+                ShopInfoSql += GetSqlStr(d["XFBZJTFSJ"]);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + ")";
                 list.Add(ShopInfoSql);
                 HouseUpdateSql = "UPDATE wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + CZ_SHID + "' WHERE FWID='" + d["FWID"] + "'";
@@ -250,6 +264,12 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
                 ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
                 ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
+                ShopInfoSql += "ZXYJ="+GetSqlStr(d["ZXYJ"], 1);
+                ShopInfoSql += "ZXYJJFSJ="+GetSqlStr(d["ZXYJJFSJ"]);
+                ShopInfoSql += "ZXYJTFSJ="+GetSqlStr(d["ZXYJTFSJ"]);
+                ShopInfoSql += "XFBZJ="+GetSqlStr(d["XFBZJ"], 1);
+                ShopInfoSql += "XFBZJJFSJ="+GetSqlStr(d["XFBZJJFSJ"]);
+                ShopInfoSql += "XFBZJTFSJ=" + GetSqlStr(d["XFBZJTFSJ"]);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
                 list.Add(ShopInfoSql);
             }
@@ -330,6 +350,12 @@ namespace UIDP.ODS.wy
                 ShopInfoSql += "SHOPBH=" + GetSqlStr(d["SHOPBH"]);
                 ShopInfoSql += "ZHLX=" + GetSqlStr(d["ZHLX"], 1);
                 ShopInfoSql += "SHOP_STATUS=" + GetSqlStr(d["userType"], 1);
+                ShopInfoSql += "ZXYJ=" + GetSqlStr(d["ZXYJ"], 1);
+                ShopInfoSql += "ZXYJJFSJ=" + GetSqlStr(d["ZXYJJFSJ"]);
+                ShopInfoSql += "ZXYJTFSJ=" + GetSqlStr(d["ZXYJTFSJ"]);
+                ShopInfoSql += "XFBZJ=" + GetSqlStr(d["XFBZJ"], 1);
+                ShopInfoSql += "XFBZJJFSJ=" + GetSqlStr(d["XFBZJJFSJ"]);
+                ShopInfoSql += "XFBZJTFSJ=" + GetSqlStr(d["XFBZJTFSJ"]);
                 ShopInfoSql = ShopInfoSql.TrimEnd(',') + " WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
                 list.Add(ShopInfoSql);
             }
@@ -386,7 +412,8 @@ namespace UIDP.ODS.wy
             string FEE_ID = Guid.NewGuid().ToString();
             
             string NewShopInfoSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
-                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS)values(";
+                   "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,FEE_ID,IS_DELETE,FWID,SHOP_STATUS," +
+                   "ZXYJ,ZXYJJFSJ,ZXYJTFSJ,XFBZJ,XFBZJJFSJ,XFBZJTFSJ)values(";
             NewShopInfoSql += GetSqlStr(CZ_SHID);
             NewShopInfoSql += GetSqlStr(d["JYNR1"]);
             NewShopInfoSql += GetSqlStr(d["ZHXM1"]);
@@ -406,6 +433,12 @@ namespace UIDP.ODS.wy
             NewShopInfoSql += GetSqlStr(0, 1);
             NewShopInfoSql += GetSqlStr(d["FWID"]);
             NewShopInfoSql += GetSqlStr(2,1);
+            NewShopInfoSql += GetSqlStr(d["ZXYJ1"], 1);
+            NewShopInfoSql += GetSqlStr(d["ZXYJJFSJ1"]);
+            NewShopInfoSql += GetSqlStr(d["ZXYJTFSJ1"]);
+            NewShopInfoSql += GetSqlStr(d["XFBZJ1"], 1);
+            NewShopInfoSql += GetSqlStr(d["XFBZJJFSJ1"]);
+            NewShopInfoSql += GetSqlStr(d["XFBZJTFSJ1"]);
             NewShopInfoSql = NewShopInfoSql.TrimEnd(',') + ")";
 
 

@@ -375,6 +375,35 @@ namespace UIDP.BIZModule.wy
             return r;
         }
 
+        public Dictionary<string,object> ExportFeeResult(string JFSTATUS)
+        {
+
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetFeeResult("", "", "", JFSTATUS);
+                if (dt.Rows.Count > 0)
+                {
+                    r["message"] = "成功！";
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = dt;
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["message"] = "成功！,但是没有数据!";
+                    r["total"] = 0;
+                    r["code"] = 2000;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
 
         public string GetSqlStr(object t, int type = 0)
         {
