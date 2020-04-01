@@ -228,8 +228,8 @@ namespace UIDP.ODS.wy
                 list.Add(RollBackSql);
                 
             }
-            //string UpdateHouseSql = "update wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + d["CZ_SHID"] + "' WHERE FWID='" + d["FWID"] + "'";
-            //list.Add(UpdateHouseSql);
+            string UpdateHouseSql = "update wy_houseinfo set FWSX=" + d["userType"] + ",CZ_SHID='" + d["CZ_SHID"] + "' WHERE FWID='" + d["FWID"] + "'";
+            list.Add(UpdateHouseSql);
             if (d["userType"].ToString() == "1")//出租用户语句
             {
                 /***
