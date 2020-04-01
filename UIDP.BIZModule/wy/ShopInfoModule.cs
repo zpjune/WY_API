@@ -398,13 +398,10 @@ namespace UIDP.BIZModule.wy
 
         public string uploadCZSHOPInfo(string filePath)
         {
-            Dictionary<string, object> r = new Dictionary<string, object>();
-            List<string> list = new List<string>();
             string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\出租商户模板.xls";//原始文件
             string path = filePath;//原始文件
             string mes = "";
             DataTable dt = new DataTable();
-
             UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
             tool.GetDataTable(System.IO.File.OpenRead(path), path, modePath, ref mes, ref dt);
             if (dt == null || dt.Rows.Count == 0)
@@ -413,8 +410,37 @@ namespace UIDP.BIZModule.wy
             }
             try
             {
-                //string b = db.UpLoadHouseInfo(dt);
-                string b = "";
+                string b = db.UpLoadCZShopInfo(dt);
+                if (b == "")
+                {
+                    return "";
+                }
+                else
+                {
+                    return b;
+                }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public string uploadCSSHOPInfo(string filePath)
+        {
+            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\出售商户模板.xls";//原始文件
+            string path = filePath;//原始文件
+            string mes = "";
+            DataTable dt = new DataTable();
+            UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
+            tool.GetDataTable(System.IO.File.OpenRead(path), path, modePath, ref mes, ref dt);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                return "空数据，导入失败！";
+            }
+            try
+            {
+                string b = db.UpLoadCSShopInfo(dt);
                 if (b == "")
                 {
                     return "";

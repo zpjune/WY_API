@@ -113,7 +113,11 @@ namespace WY.WebAPI.Controllers.wy
 
         [HttpGet("ExportShopInfo")]
         public IActionResult ExportShopInfo(string FWSX) => Ok(SM.ExportShopInfo(FWSX));
-
+        /// <summary>
+        /// 出租商户导入
+        /// </summary>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
         [HttpPost("uploadCZSHOPInfo")]
         public IActionResult uploadCZSHOPInfo([FromForm] IFormCollection formCollection)
         {
@@ -140,6 +144,57 @@ namespace WY.WebAPI.Controllers.wy
                         fs.Flush();
                     }
                     r["message"] = SM.uploadCZSHOPInfo(filename);
+                    if (r["message"].ToString() == "")
+                    {
+                        r["code"] = 2000;
+                    }
+                    else
+                    {
+                        r["code"] = -1;
+                    }
+                    Json(r);
+                }
+            }
+            catch (Exception ex)
+            {
+                r["code"] = -1;
+                r["message"] = ex.Message;
+            }
+
+            return Json(r);
+        }
+
+        /// <summary>
+        /// 出售商户导入
+        /// </summary>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
+        [HttpPost("uploadCSSHOPInfo")]
+        public IActionResult uploadCSSHOPInfo([FromForm] IFormCollection formCollection)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                FormFileCollection fileCollection = (FormFileCollection)formCollection.Files;
+                foreach (IFormFile file in fileCollection)
+                {
+                    StreamReader reader = new StreamReader(file.OpenReadStream());
+                    String content = reader.ReadToEnd();
+                    String name = file.FileName;
+                    Random ran = new Random();
+                    String filename = System.IO.Directory.GetCurrentDirectory() + "\\Files\\" + DateTime.Now.ToString("yyyyMMddhhmmss") + ran.Next(100, 999).ToString() + name;
+                    if (System.IO.File.Exists(filename))
+                    {
+                        System.IO.File.Delete(filename);
+                    }
+                    using (FileStream fs = System.IO.File.Create(filename))
+                    {
+                        // 复制文件
+                        file.CopyTo(fs);
+                        // 清空缓冲区数据
+                        fs.Flush();
+                    }
+                    r["message"] = SM.uploadCSSHOPInfo(filename);
                     if (r["message"].ToString() == "")
                     {
                         r["code"] = 2000;

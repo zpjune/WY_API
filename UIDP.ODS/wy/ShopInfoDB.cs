@@ -525,6 +525,234 @@ namespace UIDP.ODS.wy
             //sql += " ORDER BY SHOP_ID OFFSET" + ((page - 1) * limit) + " rows fetch next " + limit + " rows only";
             return db.GetDataTable(sql);
         }
+        /// <summary>
+        /// 出租商户导入语句
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public string UpLoadCZShopInfo(DataTable dt)
+        {
+            string ErrMes = "";//错误信息
+            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0");
+            DataTable DicTable = db.GetDataTable("SELECT Name,Code FROM tax_dictionary WHERE ParentCode='PAY_WAY'");
+            List<string> list = new List<string>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataRow[] FWdr = FWTable.Select("FWBH='" + dr["房屋编号"]+"'");
+                if(FWdr.Length == 0)
+                {
+                    ErrMes += "房屋编号为" + dr["房屋编号"] + "的商铺没有找到对应的房屋，请去商铺管理功能确认此房屋存在并处于空闲状态！";
+                    continue;
+                }
+                else if (FWdr.Length > 1)
+                {
+                    ErrMes += "房屋编号为" + dr["房屋编号"] + "的商铺匹配到了两个或者以上的商铺信息，请去商铺管理功能确认房屋编号是否重复！";
+                    continue;
+                }
+                else if (ErrMes != "")
+                {
+                    continue;
+                }
+                else
+                {
+                    Guid CZ_SHID = Guid.NewGuid();
+                    Guid FEE_ID = Guid.NewGuid();
+                    Guid LEASE_ID = Guid.NewGuid();
+                    string UpdateHouseInfo = "update wy_houseinfo set FWSX=1,CZ_SHID='" + CZ_SHID + "' WHERE FWID='" + FWdr[0]["FWID"] + "'";
+                    list.Add(UpdateHouseInfo);
+                    string ShopSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE," +
+                        "IS_SUBLET,TELEPHONE,E_MAIL,IS_PASS,IS_DELETE,SHOP_NAME,FWID,SHOPBH,LEASE_ID,FEE_ID,ZHLX,SHOP_STATUS," +
+                        "ZXYJ,ZXYJJFSJ,ZXYJTFSJ,XFBZJ,XFBZJJFSJ,XFBZJTFSJ)VALUES(";
+                    ShopSql += GetSqlStr(CZ_SHID);
+                    ShopSql += GetSqlStr(dr["经营内容"]);
+                    ShopSql += GetSqlStr(dr["租户姓名"]);
+                    if (dr["租户性别"].ToString() == "女")
+                    {
+                        ShopSql += GetSqlStr(0, 1);
+                    }
+                    else
+                    {
+                        ShopSql += GetSqlStr(1, 1);
+                    }
+                    ShopSql += GetSqlStr(dr["身份证号"]);
+                    ShopSql += GetSqlStr(dr["手机号码"]);
+                    ShopSql += GetSqlStr(0, 1);
+                    ShopSql += GetSqlStr(dr["固定电话"]);
+                    ShopSql += GetSqlStr(dr["电子邮箱"]);
+                    ShopSql += GetSqlStr(0, 1);
+                    ShopSql += GetSqlStr(0, 1);
+                    ShopSql += GetSqlStr(dr["商户名称"]);
+                    ShopSql += GetSqlStr(FWdr[0]["FWID"]);
+                    ShopSql += GetSqlStr(dr["商户编号"]);
+                    ShopSql += GetSqlStr(LEASE_ID);
+                    ShopSql += GetSqlStr(FEE_ID);
+                    ShopSql += GetSqlStr(1, 1);
+                    ShopSql += GetSqlStr(1, 1);
+                    ShopSql += GetSqlStr(dr["装修押金"], 1);
+                    ShopSql += GetSqlStr(dr["装修押金缴费时间"]);
+                    ShopSql += GetSqlStr(dr["装修押金退费时间"]);
+                    ShopSql += GetSqlStr(dr["消防保证金"], 1);
+                    ShopSql += GetSqlStr(dr["消防保证金缴费时间"]);
+                    ShopSql += GetSqlStr(dr["消防保证金退费时间"]);
+                    ShopSql = ShopSql.TrimEnd(',') + ")";
+                    list.Add(ShopSql);
+                    string FeeSql = "INSERT INTO wy_RopertyCosts(FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
+                    FeeSql += GetSqlStr(FEE_ID);
+                    FeeSql += GetSqlStr(DicTable.Select("Name='" + dr["物业缴纳方式"] + "'")[0]["Code"]);
+                    FeeSql += GetSqlStr(dr["物业基准日期"]);
+                    FeeSql += GetSqlStr(Convert.ToDecimal(dr["物业费标准（元/平/月）"]) * Convert.ToDecimal(FWdr[0]["JZMJ"]), 1);
+                    FeeSql += GetSqlStr(0, 1);
+                    FeeSql += GetSqlStr(dr["物业费标准（元/平/月）"], 1);
+                    FeeSql = FeeSql.TrimEnd(',') + ")";
+                    list.Add(FeeSql);
+                    string LeaseSql = "INSERT INTO wy_Leasinginfo(LEASE_ID,ZLKSSJ,ZLZZSJ,ZLZE,ZLYJ,ZLYS,ZJJFFS,IS_DELETE)VALUES(";
+                    LeaseSql += GetSqlStr(LEASE_ID);
+                    LeaseSql += GetSqlStr(dr["租赁起始日期"]);
+                    LeaseSql += GetSqlStr(dr["租赁结束日期"]);
+                    LeaseSql += GetSqlStr(dr["租赁总额"], 1);
+                    LeaseSql += GetSqlStr(dr["租赁押金"], 1);
+                    LeaseSql += GetSqlStr(dr["租赁月数"], 1);
+                    LeaseSql += GetSqlStr(DicTable.Select("Name='" + dr["房租缴纳方式"] + "'")[0]["Code"]);
+                    LeaseSql += GetSqlStr(0, 1);
+                    LeaseSql = LeaseSql.TrimEnd(',') + ")";
+                    list.Add(LeaseSql);
+                }
+                
+            }
+            if (ErrMes == "")
+            {
+                return db.Executs(list);
+            }
+            else
+            {
+                return ErrMes;
+            }           
+        }
+
+        public string UpLoadCSShopInfo(DataTable dt)
+        {
+            string ErrMes = "";//错误信息
+            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0");
+            DataTable DicTable = db.GetDataTable("SELECT Name,Code FROM tax_dictionary WHERE ParentCode='PAY_WAY'");
+            List<string> list = new List<string>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataRow[] FWdr = FWTable.Select("FWBH='" + dr["房屋编号"] + "'");
+                if (FWdr.Length == 0)
+                {
+                    ErrMes += "房屋编号为" + dr["房屋编号"] + "的商铺没有找到对应的房屋，请去商铺管理功能确认此房屋存在并处于空闲状态！";
+                    continue;
+                }
+                else if (FWdr.Length > 1)
+                {
+                    ErrMes += "房屋编号为" + dr["房屋编号"] + "的商铺匹配到了两个或者以上的商铺信息，请去商铺管理功能确认房屋编号是否重复！";
+                    continue;
+                }
+                else if (ErrMes != "")
+                {
+                    continue;
+                }
+                else
+                {
+                    Guid CZ_SHID = Guid.NewGuid();
+                    Guid FEE_ID = Guid.NewGuid();
+                    Guid SUBLET_ID = Guid.NewGuid();
+                    string UpdateHouseInfo = "update wy_houseinfo set FWSX=2,CZ_SHID='" + CZ_SHID + "' WHERE FWID='" + FWdr[0]["FWID"] + "'";
+                    list.Add(UpdateHouseInfo);
+                    string ShopSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE," +
+                        "IS_SUBLET,SUBLET_ID,TELEPHONE,E_MAIL,IS_PASS,IS_DELETE,SHOP_NAME,FWID,SHOPBH,FEE_ID,ZHLX,SHOP_STATUS," +
+                        "ZXYJ,ZXYJJFSJ,ZXYJTFSJ,XFBZJ,XFBZJJFSJ,XFBZJTFSJ)VALUES(";
+                    ShopSql += GetSqlStr(CZ_SHID);
+                    ShopSql += GetSqlStr(dr["经营内容"]);
+                    ShopSql += GetSqlStr(dr["租户姓名"]);
+                    if (dr["租户性别"].ToString() == "女")
+                    {
+                        ShopSql += GetSqlStr(0, 1);
+
+                    }
+                    else
+                    {
+                        ShopSql += GetSqlStr(1, 1);
+                    }
+                    ShopSql += GetSqlStr(dr["身份证号"]);
+                    ShopSql += GetSqlStr(dr["手机号码"]);
+                    if (dr["是否转租"].ToString() == "否")
+                    {
+                        ShopSql += GetSqlStr(0, 1);
+                        ShopSql += GetSqlStr("");
+                    }
+                    else
+                    {
+                        ShopSql += GetSqlStr(1, 1);
+                        ShopSql += GetSqlStr(SUBLET_ID);
+                        string SubletSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE," +
+                        "IS_SUBLET,TELEPHONE,E_MAIL,IS_DELETE,SHOP_NAME,FWID,SHOPBH,ZHLX,SHOP_STATUS)VALUES(";
+                        SubletSql += GetSqlStr(SUBLET_ID);
+                        SubletSql += GetSqlStr(dr["转租经营内容"]);
+                        SubletSql += GetSqlStr(dr["转租姓名"]);
+                        if (dr["转租性别"].ToString() == "女")
+                        {
+                            SubletSql += GetSqlStr(0, 1);
+
+                        }
+                        else
+                        {
+                            SubletSql += GetSqlStr(1, 1);
+                        }
+                        SubletSql += GetSqlStr(dr["转租身份证号"]);
+                        SubletSql += GetSqlStr(dr["转租手机号码"]);
+                        SubletSql += GetSqlStr(0, 1);
+                        SubletSql += GetSqlStr(dr["转租固定电话"]);
+                        SubletSql += GetSqlStr(dr["转租电子邮箱"]);
+                        SubletSql += GetSqlStr(0, 1);
+                        SubletSql += GetSqlStr(dr["转租商户名称"]);
+                        SubletSql += GetSqlStr(FWdr[0]["FWID"]);
+                        SubletSql += GetSqlStr(dr["转租商户编号"]);
+                        SubletSql += GetSqlStr(1, 1);
+                        SubletSql += GetSqlStr(3, 1);
+                        SubletSql = SubletSql.TrimEnd(',') + ")";
+                        list.Add(SubletSql);
+
+                    }
+                    ShopSql += GetSqlStr(dr["固定电话"]);
+                    ShopSql += GetSqlStr(dr["电子邮箱"]);
+                    ShopSql += GetSqlStr(0, 1);
+                    ShopSql += GetSqlStr(0, 1);
+                    ShopSql += GetSqlStr(dr["商户名称"]);
+                    ShopSql += GetSqlStr(FWdr[0]["FWID"]);
+                    ShopSql += GetSqlStr(dr["商户编号"]);
+                    ShopSql += GetSqlStr(FEE_ID);
+                    ShopSql += GetSqlStr(1, 1);
+                    ShopSql += GetSqlStr(2, 1);
+                    ShopSql += GetSqlStr(dr["装修押金"], 1);
+                    ShopSql += GetSqlStr(dr["装修押金缴费时间"]);
+                    ShopSql += GetSqlStr(dr["装修押金退费时间"]);
+                    ShopSql += GetSqlStr(dr["消防保证金"], 1);
+                    ShopSql += GetSqlStr(dr["消防保证金缴费时间"]);
+                    ShopSql += GetSqlStr(dr["消防保证金退费时间"]);
+                    ShopSql = ShopSql.TrimEnd(',') + ")";
+                    list.Add(ShopSql);
+                    string FeeSql = "INSERT INTO wy_RopertyCosts(FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
+                    FeeSql += GetSqlStr(FEE_ID);
+                    FeeSql += GetSqlStr(DicTable.Select("Name='" + dr["物业缴纳方式"] + "'")[0]["Code"]);
+                    FeeSql += GetSqlStr(dr["物业基准日期"]);
+                    FeeSql += GetSqlStr(Convert.ToDecimal(dr["物业费标准（元/平/月）"]) * Convert.ToDecimal(FWdr[0]["JZMJ"]), 1);
+                    FeeSql += GetSqlStr(0, 1);
+                    FeeSql += GetSqlStr(dr["物业费标准（元/平/月）"], 1);
+                    FeeSql = FeeSql.TrimEnd(',') + ")";
+                    list.Add(FeeSql);
+                }
+               
+            }
+            if (ErrMes == "")
+            {
+                return db.Executs(list);
+            }
+            else
+            {
+                return ErrMes;
+            }
+        }
 
 
 
