@@ -100,6 +100,13 @@ namespace WY.WebAPI.Controllers.wy
         [HttpPost("ConfirmReciveMoney")]
         public IActionResult ConfirmReciveMoney([FromBody]JArray value) => Ok(FR.ConfirmReciveMoney(value.ToObject<List<Dictionary<string, object>>>()));
         /// <summary>
+        /// 清缴
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("PayOff")]
+        public IActionResult PayOff([FromBody]JArray value) => Ok(FR.PayOff(value.ToObject<List<Dictionary<string, object>>>()));
+        /// <summary>
         /// 导出缴费通知单功能
         /// </summary>
         /// <param name="JFSTATUS"></param>

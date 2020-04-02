@@ -164,5 +164,16 @@ namespace UIDP.ODS.wy
             return db.Executs(list);
         }
 
+        public string PayOff(List<Dictionary<string, object>> datalist)
+        {
+            List<string> list = new List<string>();
+            foreach (Dictionary<string, object> d in datalist)
+            {
+                string sql = "UPDATE wy_pay_record SET SFTZ=2 WHERE RECORD_ID='" + d["RECORD_ID"] + "'";
+                list.Add(sql);
+            }
+            return db.Executs(list);
+        }
+
     }
 }

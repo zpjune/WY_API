@@ -375,6 +375,35 @@ namespace UIDP.BIZModule.wy
             return r;
         }
 
+        public Dictionary<string, object> PayOff(List<Dictionary<string, object>> list)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                //do something 需要加入确认收据推送功能
+                string b = db.PayOff(list);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["message"] = b;
+                    r["code"] = -1;
+                }
+
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+
+
         public Dictionary<string,object> ExportFeeResult(string JFSTATUS)
         {
 
