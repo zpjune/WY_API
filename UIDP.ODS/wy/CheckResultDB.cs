@@ -41,7 +41,11 @@ namespace UIDP.ODS.wy
                 " join wy_checkPlan c on b.PLAN_ID=c.PLAN_ID AND c.IS_DELETE=0" +
                 //" left join tax_dictionary d on a.RWFW=d.Code AND d.ParentCode='SSQY'" +
                 " left join V_TaskRegion d on a.PLAN_DETAIL_ID=d.PLAN_DETAIL_ID" +
-                " where c.JHND='" + year + "'";
+                " where 1=1";
+            if (!string.IsNullOrEmpty(year))
+            {
+                sql += " AND  c.JHND=" + year;
+            }
             if (!string.IsNullOrEmpty(RWMC))
             {
                 sql += " AND  a.RWMC='" + RWMC + "'";

@@ -33,7 +33,10 @@ namespace UIDP.ODS.wy
                 sql += " AND FWSX= '" + FWSX + "'";
             }
             sql += "{1}";
-            string DataSql = string.Format(sql, "a.*,b.Name AS LS,c.Name AS JG,d.Name AS SS", " ORDER BY FWBH OFFSET " + ((page - 1) * limit) + " rows fetch next " + limit + " rows only");
+            //SqlSever分页
+            //string DataSql = string.Format(sql, "a.*,b.Name AS LS,c.Name AS JG,d.Name AS SS", " ORDER BY FWBH OFFSET " + ((page - 1) * limit) + " rows fetch next " + limit + " rows only");
+            //MySql分页
+            string DataSql = string.Format(sql, "a.*,b.Name AS LS,c.Name AS JG,d.Name AS SS", " ORDER BY FWBH limit " + ((page - 1) * limit) + "," + limit);
             string CountSql = string.Format(sql, "count(*) AS TOTAL", "");
             Dictionary<string, string> d = new Dictionary<string, string>()
             {

@@ -11,7 +11,9 @@ namespace UIDP.ODS.wy
         DBTool db = new DBTool("");
         public DataTable GetTaskInfo(string RWBH,string RWMC)
         {
-            string sql = "select * from wy_check_task where IS_DELETE=0";
+            string sql = "select a.*,b.NAME from wy_check_task a" +
+                " JOIN v_taskregion b ON a.PLAN_DETAIL_ID=b.PLAN_DETAIL_ID " +
+                " where IS_DELETE=0";
             if (!string.IsNullOrEmpty(RWBH))
             {
                 sql += " AND RWBH='" + RWBH + "'";

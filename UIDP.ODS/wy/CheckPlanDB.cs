@@ -20,7 +20,7 @@ namespace UIDP.ODS.wy
             }
             if (!string.IsNullOrEmpty(JHND))
             {
-                sql += " and JHND=YEAR('" + JHND + "')";
+                sql += " and JHND=" + JHND;
             }
             return db.GetDataTable(sql);
         }

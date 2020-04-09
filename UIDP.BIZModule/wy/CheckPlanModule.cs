@@ -74,6 +74,7 @@ namespace UIDP.BIZModule.wy
                 else
                 {
                     r["code"] = 2000;
+                    r["items"] = new DataTable();
                     r["message"] = "成功，但是没有数据";
                 }
             }

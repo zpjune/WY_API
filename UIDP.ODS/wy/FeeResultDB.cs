@@ -18,10 +18,10 @@ namespace UIDP.ODS.wy
             string sql = "SELECT a.*,b.FWMC,b.FWBH,c.ZHXM,c.MOBILE_PHONE FROM V_pay_record a " +
                 " join wy_houseinfo b on a.FWID=b.FWID AND b.IS_DELETE=0" +
                 " join wy_shopinfo c on b.CZ_SHID=c.CZ_SHID AND c.IS_DELETE=0" +
-                "WHERE 1=1";
+                " WHERE 1=1";
             if (!string.IsNullOrEmpty(JFSTATUS))
             {
-                sql += " AND a.JFZT=" + JFSTATUS + "";
+                sql += " AND a.JFZT=" + JFSTATUS;
             }
             if (!string.IsNullOrEmpty(JFLX))
             {
@@ -132,7 +132,8 @@ namespace UIDP.ODS.wy
             string sql = "select a.*,b.FWMC,b.FWBH,c.SHOP_NAME,c.ZHXM,c.MOBILE_PHONE from V_pay_record a" +
                 " join wy_houseinfo b on a.FWID=b.FWID AND b.FWSX!=0" +
                 " join wy_shopinfo c on a.CZ_SHID=c.CZ_SHID" +
-                " where a.JFZT=0 AND datediff(dd,GETDATE(),YXQS)<0 ";
+                //" where a.JFZT=0 AND datediff(dd,GETDATE(),YXQS)<0 ";//SqlSever版本
+                " where a.JFZT=0 AND datediff(sysdate(),YXQS)<0 ";//MySql版本
             if (!string.IsNullOrEmpty(JFLX))
             {
                 sql += " AND a.JFLX='" + JFLX + "'";
