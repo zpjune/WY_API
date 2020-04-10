@@ -11,7 +11,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("RegionDirector")]
-    public class RegionDirectorController : Controller
+    public class RegionDirectorController : WebApiBaseController
     {
         RegionDirectorModule RD = new RegionDirectorModule();
         [HttpGet("GetRegionDirector")]

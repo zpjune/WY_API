@@ -13,7 +13,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("ShopInfo")]
-    public class ShopInfoController : Controller
+    public class ShopInfoController : WebApiBaseController
     {
         ShopInfoModule SM = new ShopInfoModule();
         /// <summary>

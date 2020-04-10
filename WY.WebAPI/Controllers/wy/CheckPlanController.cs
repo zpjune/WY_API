@@ -11,7 +11,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("CheckPlan")]
-    public class CheckPlanController : Controller
+    public class CheckPlanController : WebApiBaseController
     {
         CheckPlanModule CPM = new CheckPlanModule();
         /// <summary>

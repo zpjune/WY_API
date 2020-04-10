@@ -11,7 +11,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("FeeResult")]
-    public class FeeResultController : Controller
+    public class FeeResultController : WebApiBaseController
     {
         FeeResultModule FR = new FeeResultModule();
 

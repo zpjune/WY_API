@@ -16,7 +16,7 @@ namespace WY.WebAPI.Controllers.wy
    
     [Produces("application/json")]
     [Route("EleReceive")]
-    public class EleReceiveController : Controller
+    public class EleReceiveController : WebApiBaseController
     {
         EleReceiveModule md = new EleReceiveModule();
         public static IConfiguration Configuration { get; set; }

@@ -11,7 +11,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("Task")]
-    public class TaskController : Controller
+    public class TaskController : WebApiBaseController
     {
         TaskModule TM = new TaskModule();
         /// <summary>

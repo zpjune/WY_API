@@ -11,7 +11,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("TaskDetailConfig")]
-    public class TaskDetailConfigController : Controller
+    public class TaskDetailConfigController : WebApiBaseController
     {
         TaskDetailConfigModule TDC = new TaskDetailConfigModule();
 

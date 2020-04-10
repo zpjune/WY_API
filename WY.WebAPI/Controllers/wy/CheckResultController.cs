@@ -10,7 +10,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("CheckResult")]
-    public class CheckResultController : Controller
+    public class CheckResultController : WebApiBaseController
     {
         CheckResultModule CRM = new CheckResultModule();
         [HttpGet("GetCheckResult")]

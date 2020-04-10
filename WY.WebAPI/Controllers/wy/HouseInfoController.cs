@@ -13,7 +13,7 @@ namespace WY.WebAPI.Controllers.wy
 {
     [Produces("application/json")]
     [Route("HouseInfo")]
-    public class HouseInfoController : Controller
+    public class HouseInfoController : WebApiBaseController
     {
         HouseInfoModule HM = new HouseInfoModule();
         /// <summary>
