@@ -14,6 +14,7 @@ using UEditor.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using WY.WebAPI.Filters;
 
 namespace UIDP.WebAPI
 {
@@ -100,6 +101,8 @@ System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Files/export"
                     ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=36000");
                 }
             });
+            // 添加全局异常捕获，方便记录日志
+            app.UseMiddleware<ExceptionMiddleware>();
             #region 解决Ubuntu Nginx 代理不能获取IP问题
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

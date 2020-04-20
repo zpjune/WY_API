@@ -53,7 +53,7 @@ namespace UIDP.LOG
         /// <returns></returns>
         public static string GetStrConn()
         {
-            using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "\\log.json"))
+            using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "/log.json"))
             {
                 using (JsonTextReader reader = new JsonTextReader(file))
                 {

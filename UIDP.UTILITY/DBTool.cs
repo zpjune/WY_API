@@ -296,7 +296,7 @@ namespace UIDP.UTILITY
         {
             try
             {
-                using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "\\DBConfig.json"))
+                using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "/DBConfig.json"))
                 {
                     using (JsonTextReader reader = new JsonTextReader(file))
                     {

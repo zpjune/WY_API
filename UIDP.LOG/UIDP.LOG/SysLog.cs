@@ -101,7 +101,7 @@ namespace UIDP.LOG
         {
             try
             {
-                using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "\\log.json"))
+                using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "/log.json"))
                 {
                     using (JsonTextReader reader = new JsonTextReader(file))
                     {

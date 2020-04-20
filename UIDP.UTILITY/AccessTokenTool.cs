@@ -37,7 +37,7 @@ namespace UIDP.UTILITY
         /// <returns></returns>
         public static string GetDesEncryptKey()
         {
-            using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "\\Security.json"))
+            using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "/Security.json"))
             {
                 using (JsonTextReader reader = new JsonTextReader(file))
                 {
