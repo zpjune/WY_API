@@ -27,5 +27,8 @@ namespace WY.WebAPI.Controllers.wy
 
         [HttpGet("DeleteTaskDetailConfig")]
         public IActionResult DeleteTaskDetailConfig(string ID) => Ok(TDC.DeleteTaskDetailConfig(ID));
+
+        [HttpGet("GetParentCodeConfig")]
+        public IActionResult GetParentCodeConfig() => Ok(TDC.GetParentCodeConfig());
     }
 }

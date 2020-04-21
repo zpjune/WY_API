@@ -146,5 +146,31 @@ namespace UIDP.BIZModule.wy
             }
             return r;
         }
+
+        public Dictionary<string, object> GetParentCodeConfig()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt =db.GetParentCodeConfig();
+                if (dt.Rows.Count > 0)
+                {
+                    r["message"] = "成功";
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                }
+                else
+                {
+                    r["code"] = 2001;
+                    r["message"] = "成功,但是没有数据";
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }

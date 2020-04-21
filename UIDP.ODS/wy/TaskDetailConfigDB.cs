@@ -38,6 +38,11 @@ namespace UIDP.ODS.wy
             return db.ExecutByStringResult("delete from wy_task_detail_config where ID='" + ID + "'");
         }
 
+        public DataTable GetParentCodeConfig()
+        {
+            return db.GetDataTable("select ID,Name,Code from wy_task_detail_config where ParentID IS NULL OR ParentID=''");
+        }
+
 
         public string GetSqlStr(object t, int type = 0)
         {

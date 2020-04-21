@@ -150,7 +150,7 @@ namespace UIDP.ODS.wy
                     ShopInfoSql += GetSqlStr(SUBLET_ID);
                     //转租语句
                     SuletSql = "INSERT INTO wy_shopinfo(CZ_SHID,JYNR,ZHXM,ZHXB,SFZH,MOBILE_PHONE,IS_SUBLET,TELEPHONE,E_MAIL," +
-                      "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,IS_DELETE)values(";
+                      "IS_PASS,CJR,CJSJ,SHOP_NAME,SHOPBH,ZHLX,IS_DELETE,FWID)values(";
                     SuletSql += GetSqlStr(SUBLET_ID);
                     SuletSql += GetSqlStr(d["JYNR1"]);
                     SuletSql += GetSqlStr(d["ZHXM1"]);
@@ -167,6 +167,7 @@ namespace UIDP.ODS.wy
                     SuletSql += GetSqlStr(d["SHOPBH1"]);
                     SuletSql += GetSqlStr(d["ZHLX1"], 1);
                     SuletSql += GetSqlStr(0, 1);
+                    SuletSql += GetSqlStr(d["FWID"]);
                     SuletSql = SuletSql.TrimEnd(',') + ")";
                     list.Add(SuletSql);
                 }
