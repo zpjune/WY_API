@@ -18,5 +18,6 @@ namespace UIDP.BIZModule.wy.Models
         public string BJSJ { get; set; }
         public int IS_DELETE { get; set; }
         public string ALLPLACENAME { get; set; }
+        public string JCNAME { get; set; }
     }
 }

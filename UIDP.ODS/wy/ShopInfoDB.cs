@@ -534,7 +534,7 @@ namespace UIDP.ODS.wy
         public string UpLoadCZShopInfo(DataTable dt)
         {
             string ErrMes = "";//错误信息
-            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0");
+            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0 AND IS_DELETE=0");
             DataTable DicTable = db.GetDataTable("SELECT Name,Code FROM tax_dictionary WHERE ParentCode='PAY_WAY'");
             List<string> list = new List<string>();
             foreach (DataRow dr in dt.Rows)
@@ -633,7 +633,7 @@ namespace UIDP.ODS.wy
         public string UpLoadCSShopInfo(DataTable dt)
         {
             string ErrMes = "";//错误信息
-            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0");
+            DataTable FWTable = db.GetDataTable("SELECT FWID,JZMJ,FWBH FROM wy_houseinfo WHERE FWSX=0 AND IS_DELETE=0");
             DataTable DicTable = db.GetDataTable("SELECT Name,Code FROM tax_dictionary WHERE ParentCode='PAY_WAY'");
             List<string> list = new List<string>();
             foreach (DataRow dr in dt.Rows)
@@ -762,7 +762,6 @@ namespace UIDP.ODS.wy
             if (t == null || t.ToString() == "")
             {
                 return "null,";
-
             }
             else
             {
