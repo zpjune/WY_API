@@ -73,7 +73,7 @@ namespace WY.WebAPI.Controllers.wy
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("GetHouseInfo")]
-        public IActionResult GetHouseInfo(string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page,string baseURL) => Ok(HM.GetHouseInfo(FWBH,FWMC, LSFGS, FWSX, limit, page, baseURL));
+        public IActionResult GetHouseInfo(string ORG_CODE,string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page,string baseURL) => Ok(HM.GetHouseInfo(ORG_CODE,FWBH, FWMC, LSFGS, FWSX, limit, page, baseURL));
 
         /// <summary>
         /// 新建房屋信息
@@ -108,9 +108,15 @@ namespace WY.WebAPI.Controllers.wy
         public IActionResult uploadHouseInfo([FromForm] IFormCollection formCollection)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
+            var form = Request.Form;
             try
             {
                 FormFileCollection fileCollection = (FormFileCollection)formCollection.Files;
+                Dictionary<string, object> userinfo = new Dictionary<string, object>()
+                {
+                    {"userId",formCollection["userId"] },
+                    {"ORG_CODE",formCollection["ORG_CODE"] }
+                };
                 foreach (IFormFile file in fileCollection)
                 {
                     StreamReader reader = new StreamReader(file.OpenReadStream());
@@ -129,7 +135,7 @@ namespace WY.WebAPI.Controllers.wy
                         // 清空缓冲区数据
                         fs.Flush();
                     }
-                    r["message"] = HM.UploadHouseInfo(filename);
+                    r["message"] = HM.UploadHouseInfo(filename, userinfo);
                     if (r["message"].ToString() == "")
                     {
                         r["code"] = 2000;

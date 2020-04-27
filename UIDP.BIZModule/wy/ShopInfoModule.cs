@@ -10,12 +10,12 @@ namespace UIDP.BIZModule.wy
     public class ShopInfoModule
     {
         ShopInfoDB db = new ShopInfoDB();
-        public Dictionary<string,object> GetShopInfo(string ZHXM, string IS_PASS, string FWSX, string FWID,int page, int limit)
+        public Dictionary<string,object> GetShopInfo(string ORG_CODE,string ZHXM, string IS_PASS, string FWSX, string FWID,int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetShopInfo(ZHXM, IS_PASS,FWSX, FWID);
+                DataTable dt = db.GetShopInfo(ORG_CODE,ZHXM, IS_PASS,FWSX, FWID);
                 if (dt.Rows.Count > 0)
                 {
                     r["message"] = "成功！";
@@ -454,6 +454,85 @@ namespace UIDP.BIZModule.wy
             {
                 return e.Message;
             }
+        }
+
+        public Dictionary<string,object> GetLeaseTime(string CZ_SHID)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetLeaseTime(CZ_SHID);
+                if (dt.Rows.Count > 0)
+                {
+                    r["message"] = "成功!";
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["message"] = "成功,但是没有数据";
+                    r["code"] = 2000;
+                    r["items"] = new DataTable();
+                }
+            }
+            catch(Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+
+        public Dictionary<string, object> UpdateLeaseTime(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.UpdateLeaseTime(d);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["message"] = b;
+                    r["code"] = -1;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string,object> Renewal(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.Renewal(d);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["message"] = b;
+                    r["code"] = -1;
+                }
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
         }
     }
 }

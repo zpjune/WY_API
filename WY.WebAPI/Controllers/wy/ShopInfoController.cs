@@ -25,7 +25,7 @@ namespace WY.WebAPI.Controllers.wy
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("GetShopInfo")]
-        public IActionResult GetShopInfo(string ZHXM, string IS_PASS, string FWSX, string FWID, int page, int limit) => Ok(SM.GetShopInfo(ZHXM, IS_PASS,FWSX,FWID, page, limit));
+        public IActionResult GetShopInfo(string ORG_CODE,string ZHXM, string IS_PASS, string FWSX, string FWID, int page, int limit) => Ok(SM.GetShopInfo(ORG_CODE,ZHXM, IS_PASS,FWSX,FWID, page, limit));
         /// <summary>
         /// 获取商户详情 包括房屋信息，商户信息，租赁信息，物业信息等
         /// </summary>
@@ -214,6 +214,30 @@ namespace WY.WebAPI.Controllers.wy
 
             return Json(r);
         }
+        /// <summary>
+        /// 续租功能
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("Renewal")]
+        public IActionResult Renewal([FromBody]JObject value) => Ok(SM.Renewal(value.ToObject<Dictionary<string,object>>()));
+
+        #region 根据需求 下面两个接口暂未启用 更换另一种方案
+        /// <summary>
+        /// 获取原租赁信息的租赁日期
+        /// </summary>
+        /// <param name="CZ_SHID"></param>
+        /// <returns></returns>
+        [HttpGet("GetLeaseTime")]
+        public IActionResult GetLeaseTime(string CZ_SHID) => Ok(SM.GetLeaseTime(CZ_SHID));
+        /// <summary>
+        /// 修改租赁信息
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateLeaseTime")]
+        public IActionResult UpdateLeaseTime([FromBody]JObject value) => Ok(SM.UpdateLeaseTime(value.ToObject<Dictionary<string,object>>()));
+        #endregion
 
     }
 }

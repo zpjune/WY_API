@@ -9,13 +9,13 @@ namespace UIDP.ODS.wy
     public class HouseInfoDB
     {
         DBTool db = new DBTool("");
-        public DataSet GetHouseInfo(string FWBH,string FWMC,string LSFGS,string FWSX,int limit, int page)
+        public DataSet GetHouseInfo(string ORG_CODE,string FWBH,string FWMC,string LSFGS,string FWSX,int limit, int page)
         {
             string sql = "select {0} from wy_houseinfo a" +
                 " left join tax_dictionary b on a.LSFGS=b.Code AND b.ParentCode='LSFGS'" +
                 " left join tax_dictionary c on a.JGLX=c.Code AND c.ParentCode='JGLX'" +
                 " left join tax_dictionary d on a.SSQY=d.Code AND d.ParentCode='SSQY'" +
-                " WHERE a.IS_DELETE=0";
+                " WHERE a.IS_DELETE=0 AND a.ORG_CODE like '"+ORG_CODE+"%'";
             if (!string.IsNullOrEmpty(FWBH))
             {
                 sql += " AND FWBH = '" + FWBH + "'";
@@ -48,7 +48,7 @@ namespace UIDP.ODS.wy
         }
         public string CreateHouseInfo(Dictionary<string,object> d)
         {
-            string sql = "INSERT INTO wy_houseinfo (FWID,FWSX,FWBH,FWMC,JZMJ,LSFGS,ZLWZ,JGLX,ZCYZ,SSQY,PMT,WATER_NUMBER,ELE_NUMBER,CJR,CJSJ,ZFK,CID,IS_DELETE)" +
+            string sql = "INSERT INTO wy_houseinfo (FWID,FWSX,FWBH,FWMC,JZMJ,LSFGS,ZLWZ,JGLX,ZCYZ,SSQY,PMT,WATER_NUMBER,ELE_NUMBER,CJR,CJSJ,ZFK,CID,IS_DELETE,ORG_CODE)" +
                 " VALUES(";
             sql += GetSqlStr(Guid.NewGuid());
             sql += GetSqlStr(0,1);
@@ -67,6 +67,7 @@ namespace UIDP.ODS.wy
             sql += GetSqlStr(DateTime.Now);
             sql += GetSqlStr(d["ZFK"],1);
             sql += GetSqlStr(d["CID"], 1);
+            sql += GetSqlStr(d["ORG_CODE"], 1);
             sql += GetSqlStr(0,1);
             return db.ExecutByStringResult(sql.TrimEnd(',')+")");
         }
@@ -100,13 +101,13 @@ namespace UIDP.ODS.wy
             return db.ExecutByStringResult(sql);
         }
 
-        public string UpLoadHouseInfo(DataTable dt)
+        public string UpLoadHouseInfo(DataTable dt,Dictionary<string,object> userinfo)
         {
             DataTable DicTable = db.GetDataTable("SELECT Name,Code,ParentCode from tax_dictionary");
             List<string> list = new List<string>();
             foreach(DataRow dr in dt.Rows)
             {
-                string sql = "INSERT INTO wy_houseinfo (FWID,FWBH,FWMC,JZMJ,LSFGS,ZLWZ,JGLX,ZCYZ,SSQY,WATER_NUMBER,ELE_NUMBER,ZFK,IS_DELETE,FWSX,CID)" +
+                string sql = "INSERT INTO wy_houseinfo (FWID,FWBH,FWMC,JZMJ,LSFGS,ZLWZ,JGLX,ZCYZ,SSQY,WATER_NUMBER,ELE_NUMBER,ZFK,IS_DELETE,FWSX,CID,CJR,CJSJ,ORG_CODE)" +
                 " VALUES(";
                 sql += GetSqlStr(Guid.NewGuid());
                 sql += GetSqlStr(dr["房屋编号"]);
@@ -122,7 +123,10 @@ namespace UIDP.ODS.wy
                 sql += GetSqlStr(dr["总房款"]);
                 sql += GetSqlStr(0, 1);
                 sql += GetSqlStr(0, 1);
-                sql+= GetSqlStr(dr["电表采集器ID"]);
+                sql += GetSqlStr(dr["电表采集器ID"]);
+                sql += GetSqlStr(userinfo["userId"]);
+                sql += GetSqlStr(DateTime.Now);
+                sql += GetSqlStr(userinfo["ORG_CODE"]);
                 sql = sql.TrimEnd(',') + ")";
                 list.Add(sql);
             }

@@ -10,12 +10,12 @@ namespace UIDP.ODS.wy
     public class ShopInfoDB
     {
         DBTool db = new DBTool("");
-        public DataTable GetShopInfo(string ZHXM,string IS_PASS,string FWSX,string CZ_SHID)
+        public DataTable GetShopInfo(string ORG_CODE,string ZHXM,string IS_PASS,string FWSX,string CZ_SHID)
         {
             string sql = "select a.FWID,a.FWBH,a.FWMC,b.*,c.Name,a.FWID AS OLDID from wy_houseinfo a  " +
                 " join wy_shopinfo b ON a.CZ_SHID=b.CZ_SHID" +
                 " left join tax_dictionary c on a.LSFGS=c.Code and c.ParentCode='LSFGS'" +
-                " where a.IS_DELETE=0 AND b.IS_DELETE=0";
+                " where a.IS_DELETE=0 AND b.IS_DELETE=0 AND a.ORG_CODE LIKE'"+ ORG_CODE+"%'";
             if (!string.IsNullOrEmpty(FWSX))
             {
                 sql += " AND a.FWSX=" + FWSX;
@@ -84,7 +84,7 @@ namespace UIDP.ODS.wy
             if (d["userType"].ToString() == "1")//出租商户
             {
                 //租赁信息语句
-                LeaseSql = "INSERT INTO wy_Leasinginfo(LEASE_ID,ZLKSSJ,ZLZZSJ,ZLZE,ZLYJ,ZLYS,ZJJFFS,CJR,CJSJ,IS_DELETE)VALUES(";
+                LeaseSql = "INSERT INTO wy_Leasinginfo(LEASE_ID,ZLKSSJ,ZLZZSJ,ZLZE,ZLYJ,ZLYS,ZJJFFS,CJR,CJSJ,IS_DELETE,CZ_SHID)VALUES(";
                 LeaseSql += GetSqlStr(LEASE_ID);
                 LeaseSql += GetSqlStr(d["ZLKSSJ"]);
                 LeaseSql += GetSqlStr(d["ZLZZSJ"]);
@@ -95,6 +95,7 @@ namespace UIDP.ODS.wy
                 LeaseSql += GetSqlStr(d["userId"]);
                 LeaseSql += GetSqlStr(DateTime);
                 LeaseSql += GetSqlStr(0, 1);
+                LeaseSql+= GetSqlStr(CZ_SHID);
                 LeaseSql = LeaseSql.TrimEnd(',') + ")";
                 list.Add(LeaseSql);
                 //租户信息插入语句
@@ -203,7 +204,7 @@ namespace UIDP.ODS.wy
             {
                 throw new Exception("未检测到正确的用户类型！");
             }
-            FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ)VALUES(";
+            FeeSql = "INSERT INTO wy_RopertyCosts (FEE_ID,WYJFFS,WYJZSJ,WYJZ,IS_DELETE,WYDJ,CZ_SHID)VALUES(";
             FeeSql += GetSqlStr(FEE_ID);
             FeeSql += GetSqlStr(d["WYJFFS"]);
             FeeSql += GetSqlStr(d["WYJZSJ"]);
@@ -211,6 +212,7 @@ namespace UIDP.ODS.wy
                 " FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
             FeeSql += GetSqlStr(0, 1);
             FeeSql += GetSqlStr(d["WYDJ"], 1);
+            FeeSql += GetSqlStr(CZ_SHID);
             FeeSql = FeeSql.TrimEnd(',') + ")";
             list.Add(FeeSql);
 
@@ -248,6 +250,7 @@ namespace UIDP.ODS.wy
                 LeaseSql += "ZJJFFS=" + GetSqlStr(d["ZJJFFS"]);
                 LeaseSql += "BJR=" + GetSqlStr(d["userId"]);
                 LeaseSql += "BJSJ=" + GetSqlStr(DateTime.Now);
+                
                 LeaseSql = LeaseSql.TrimEnd(',') + " WHERE LEASE_ID='" + d["LEASE_ID"] + "'";
                 list.Add(LeaseSql);
                 //修改商户信息
@@ -755,7 +758,58 @@ namespace UIDP.ODS.wy
             }
         }
 
+        public DataTable GetLeaseTime(string CZ_SHID)
+        {
+            string sql = "select b.LEASE_ID,b.ZLKSSJ,b.ZLZZSJ from wy_shopinfo a" +
+                " join wy_leasinginfo b on a.LEASE_ID=b.LEASE_ID " +
+                " where b.CZ_SHID='" + CZ_SHID + "'";
+            return db.GetDataTable(sql);
+        }
+        public string UpdateLeaseTime(Dictionary<string,object> d)
+        {
+            string sql = "UPDATE wy_leasinginfo SET ZLKSSJ='" + d["ZLKSSJ1"] + "'," +
+                "ZLJSSJ='" + d["ZLJSSJ1"] + "' WHERE LEASE_ID='" + d["LEASE_ID"] + "'";
+            return db.ExecutByStringResult(sql);
+        }
 
+        public string Renewal(Dictionary<string,object> d)
+        {
+            List<string> sqllist = new List<string>();
+            Guid FEE_ID = Guid.NewGuid();
+            Guid LEASE_ID = Guid.NewGuid();
+            string FeeSql = "INSERT INTO wy_ropertycosts (FEE_ID,WYJFFS,WYJZSJ,WYDJ,IS_DELETE,WYJZ,CZ_SHID)VALUES(";
+            FeeSql += GetSqlStr(FEE_ID);
+            FeeSql += GetSqlStr(d["WYJFFS"]);
+            FeeSql += GetSqlStr(d["WYJZSJ"]);
+            FeeSql += GetSqlStr(d["WYDJ"],1);
+            FeeSql += GetSqlStr(0,1);
+            FeeSql += "(SELECT JZMJ * " + d["WYDJ"]+" FROM wy_houseinfo where FWID='" + d["FWID"] + "'),";
+            FeeSql += GetSqlStr(d["CZ_SHID"]);
+            //FeeSql += GetSqlStr(d["userId"]);
+            //FeeSql += GetSqlStr(DateTime.Now);
+            FeeSql = FeeSql.TrimEnd(',') + ")";
+            sqllist.Add(FeeSql);
+            string LeaseSql = "INSERT INTO wy_leasinginfo(LEASE_ID,ZLKSSJ,ZLZZSJ,ZLZE,ZLYJ,ZLYS,ZJJFFS,CJR,CJSJ,IS_DELETE,CZ_SHID)VALUES(";
+            LeaseSql += GetSqlStr(LEASE_ID);
+            LeaseSql += GetSqlStr(d["ZLKSSJ"]);
+            LeaseSql += GetSqlStr(d["ZLZZSJ"]);
+            LeaseSql += GetSqlStr(d["ZLZE"],1);
+            LeaseSql += GetSqlStr(d["ZLYJ"],1);
+            LeaseSql += GetSqlStr(d["ZLYS"],1);
+            LeaseSql += GetSqlStr(d["ZJJFFS"]);
+            LeaseSql += GetSqlStr(d["userId"]);
+            LeaseSql += GetSqlStr(DateTime.Now);
+            LeaseSql += GetSqlStr(0,1);
+            LeaseSql += GetSqlStr(d["CZ_SHID"]);
+            LeaseSql = LeaseSql.TrimEnd(',') + ")";
+            sqllist.Add(LeaseSql);
+            string UpdateSql = "UPDATE wy_shopinfo set LEASE_ID=";
+            UpdateSql += GetSqlStr(LEASE_ID);
+            UpdateSql += "FEE_ID="+GetSqlStr(FEE_ID);
+            UpdateSql = UpdateSql.TrimEnd(',') + "WHERE CZ_SHID='" + d["CZ_SHID"] + "'";
+            sqllist.Add(UpdateSql);
+            return db.Executs(sqllist);
+        }
 
         public string GetSqlStr(object t, int type = 0)
         {

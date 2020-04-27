@@ -11,12 +11,12 @@ namespace UIDP.BIZModule.wy
     public class HouseInfoModule
     {
         HouseInfoDB db = new HouseInfoDB();
-        public Dictionary<string, object> GetHouseInfo(string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page, string baseURL)
+        public Dictionary<string, object> GetHouseInfo(string ORG_CODE,string FWBH,string FWMC, string LSFGS, string FWSX, int limit, int page, string baseURL)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetHouseInfo(FWBH,FWMC, LSFGS, FWSX, limit, page);
+                DataSet ds = db.GetHouseInfo(ORG_CODE,FWBH, FWMC, LSFGS, FWSX, limit, page);
                 List<HouseInfoModel> list = new List<HouseInfoModel>();
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -162,7 +162,7 @@ namespace UIDP.BIZModule.wy
             }
             return r;
         }
-        public string UploadHouseInfo(string filePath)
+        public string UploadHouseInfo(string filePath,Dictionary<string,object> userinfo)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             List<string> list = new List<string>();
@@ -179,7 +179,7 @@ namespace UIDP.BIZModule.wy
             }
             try
             {
-                string b = db.UpLoadHouseInfo(dt);
+                string b = db.UpLoadHouseInfo(dt,userinfo);
                 if (b == "")
                 {
                     return "";
