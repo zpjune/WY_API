@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using WY.WebAPI.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace UIDP.WebAPI
 {
@@ -30,7 +31,13 @@ namespace UIDP.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver()); 
+            services.AddMvc(
+                opt =>
+                {
+                    opt.UseCentralRoutePrefix(new RouteAttribute("WY_API/"));
+                    //opt.UseCentralRoutePrefix(new RouteAttribute("api/[controller]/[action]"));
+
+                }).AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver()); 
             services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(x =>
             {
 
